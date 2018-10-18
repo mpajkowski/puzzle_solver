@@ -1,0 +1,3 @@
+BasedOnStyle: Mozilla
+AlwaysBreakAfterReturnType: None
+AlwaysBreakAfterDefinitionReturnType: None
