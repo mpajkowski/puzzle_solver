@@ -1,3 +1,4 @@
 BasedOnStyle: Mozilla
 AlwaysBreakAfterReturnType: None
 AlwaysBreakAfterDefinitionReturnType: None
+ColumnLimit: 110
