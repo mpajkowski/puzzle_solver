@@ -8,7 +8,7 @@ const std::unordered_map<Constants::Strategy, std::string> Constants::strategy2s
 
 const std::unordered_map<Constants::Heuristic, std::string> Constants::heuristic2string{
   { Constants::Heuristic::HAMM, "hamm" },
-  { Constants::Heuristic::MANH, "mahn" },
+  { Constants::Heuristic::MANH, "manh" },
 };
 
 const std::unordered_map<Constants::Order, std::string> Constants::order2string{
