@@ -1,4 +1,8 @@
-set(src_files Node.cpp Config.cpp ConfigParser.cpp Constants.cpp State.cpp StateParser.cpp)
+set(src_files App.cpp Config.cpp ConfigParser.cpp Constants.cpp Node.cpp State.cpp StateParser.cpp)
 add_library(${proj_name}_lib ${src_files})
 add_executable(${proj_name} main.cpp)
 target_link_libraries(${proj_name} ${proj_name}_lib)
+
+add_custom_command(TARGET ${proj_name}
+                   POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${proj_name}> ${PROJECT_SOURCE_DIR}/sandbox)
