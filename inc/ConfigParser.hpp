@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Config.hpp"
 #include "Constants.hpp"
 #include <string>
@@ -11,8 +12,8 @@ public:
   Config createConfig();
 
 private:
-  Constants::Strategy parseStrategy(std::string const& env);
-  Constants::Heuristic parseHeuristic(std::string const& env);
-  Constants::Order parseOrder(std::string const& env);
+  auto parseStrategy(std::string const& env) -> Constants::Strategy;
+  auto parseHeuristic(std::string const& env) -> Constants::Heuristic;
+  auto parseOrder(std::string const& env) -> Constants::Order;
   std::vector<std::string> envs;
 };

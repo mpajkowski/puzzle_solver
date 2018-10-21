@@ -44,6 +44,7 @@ enum class Order
   D_L_R_U,
 };
 
+// TODO maybe map enum2string in a more fancy way?
 extern const std::unordered_map<Strategy, std::string> strategy2string;
 extern const std::unordered_map<Heuristic, std::string> heuristic2string;
 extern const std::unordered_map<Order, std::string> order2string;

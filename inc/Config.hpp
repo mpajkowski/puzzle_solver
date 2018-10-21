@@ -5,6 +5,8 @@
 
 struct Config
 {
+  auto toString() const -> std::string;
+
   Constants::Strategy strategy;
   std::variant<Constants::Order, Constants::Heuristic> orderOrHeuristic;
 

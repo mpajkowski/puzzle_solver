@@ -8,55 +8,55 @@ ConfigParser::ConfigParser(int argc, char** argv)
   }
 }
 
-Config ConfigParser::createConfig()
+auto ConfigParser::createConfig() -> Config
 {
-  Config cfg;
+  auto cfg = Config{};
+  auto envIterator = ++std::begin(envs);
 
-  auto& strategyEnv = envs[1];
-  cfg.strategy = parseStrategy(strategyEnv);
+  cfg.strategy = parseStrategy(*envIterator++);
 
   if (cfg.strategy == Constants::Strategy::ASTR) {
-    cfg.orderOrHeuristic = parseHeuristic(envs[2]);
+    cfg.orderOrHeuristic = parseHeuristic(*envIterator++);
   } else {
-    cfg.orderOrHeuristic = parseOrder(envs[2]);
+    cfg.orderOrHeuristic = parseOrder(*envIterator++);
   }
 
-  cfg.firstStateFileName = envs[4];
-  cfg.solutionFileName = envs[5];
-  cfg.additionalInfoFileName = envs[6];
+  cfg.firstStateFileName = *envIterator++;
+  cfg.solutionFileName = *envIterator++;
+  cfg.additionalInfoFileName = *envIterator++;
 
   return cfg;
 }
 
-Constants::Strategy ConfigParser::parseStrategy(std::string const& env)
+auto ConfigParser::parseStrategy(std::string const& env) -> Constants::Strategy
 {
-  for (const auto& it : Constants::strategy2string) {
+  for (auto const& it : Constants::strategy2string) {
     if (it.second == env) {
       return it.first;
     }
   }
 
-  throw std::logic_error{ " Bad strategy variable " };
+  throw std::logic_error{ "Bad strategy variable" };
 }
 
-Constants::Heuristic ConfigParser::parseHeuristic(std::string const& env)
+auto ConfigParser::parseHeuristic(std::string const& env) -> Constants::Heuristic
 {
-  for (const auto& it : Constants::heuristic2string) {
+  for (auto const& it : Constants::heuristic2string) {
     if (it.second == env) {
       return it.first;
     }
   }
 
-  throw std::logic_error{ " Bad heuristic variable " };
+  throw std::logic_error{ "Bad heuristic variable" };
 }
 
-Constants::Order ConfigParser::parseOrder(std::string const& env)
+auto ConfigParser::parseOrder(std::string const& env) -> Constants::Order
 {
-  for (const auto& it : Constants::order2string) {
+  for (auto const& it : Constants::order2string) {
     if (it.second == env) {
       return it.first;
     }
   }
 
-  throw std::logic_error{ " Bad order variable " };
+  throw std::logic_error{ "Bad order variable" };
 }
