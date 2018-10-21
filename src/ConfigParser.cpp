@@ -16,9 +16,9 @@ auto ConfigParser::createConfig() -> Config
   cfg.strategy = parseStrategy(*envIterator++);
 
   if (cfg.strategy == Constants::Strategy::ASTR) {
-    cfg.orderOrHeuristic = parseHeuristic(*envIterator++);
+    cfg.strategyParam = parseHeuristic(*envIterator++);
   } else {
-    cfg.orderOrHeuristic = parseOrder(*envIterator++);
+    cfg.strategyParam = parseOrder(*envIterator++);
   }
 
   cfg.firstStateFileName = *envIterator++;

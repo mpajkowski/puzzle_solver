@@ -7,10 +7,10 @@ auto Config::toString() const -> std::string
 
   os << "Strategy: " << Constants::strategy2string.at(strategy) << "\n";
 
-  if (std::holds_alternative<Constants::Order>(orderOrHeuristic)) {
-    os << "Order: " << Constants::order2string.at(std::get<Constants::Order>(orderOrHeuristic));
+  if (std::holds_alternative<Constants::Order>(strategyParam)) {
+    os << "Order: " << Constants::order2string.at(std::get<Constants::Order>(strategyParam));
   } else {
-    os << "Heuristic: " << Constants::heuristic2string.at(std::get<Constants::Heuristic>(orderOrHeuristic));
+    os << "Heuristic: " << Constants::heuristic2string.at(std::get<Constants::Heuristic>(strategyParam));
   }
 
   os << "First state file name: " << firstStateFileName;

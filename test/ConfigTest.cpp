@@ -19,7 +19,7 @@ TEST(ConfigTest, firstInvocation)
   auto config = configParser.createConfig();
 
   EXPECT_EQ(config.strategy, Constants::Strategy::BFS);
-  EXPECT_EQ(std::get<Constants::Order>(config.orderOrHeuristic), Constants::Order::R_D_U_L);
+  EXPECT_EQ(std::get<Constants::Order>(config.strategyParam), Constants::Order::R_D_U_L);
   EXPECT_EQ(config.firstStateFileName, "4x4_01_0001.txt");
   EXPECT_EQ(config.solutionFileName, "4x4_01_0001_bfs_rdul_sol.txt");
   EXPECT_EQ(config.additionalInfoFileName, "4x4_01_0001_bfs_rdul_stats.txt");
@@ -41,7 +41,7 @@ TEST(ConfigTest, secondInvocation)
   auto config = configParser.createConfig();
 
   EXPECT_EQ(config.strategy, Constants::Strategy::DFS);
-  EXPECT_EQ(std::get<Constants::Order>(config.orderOrHeuristic), Constants::Order::L_U_D_R);
+  EXPECT_EQ(std::get<Constants::Order>(config.strategyParam), Constants::Order::L_U_D_R);
   EXPECT_EQ(config.firstStateFileName, "4x4_01_0001.txt");
   EXPECT_EQ(config.solutionFileName, "4x4_01_0001_dfs_ludr_sol.txt");
   EXPECT_EQ(config.additionalInfoFileName, "4x4_01_0001_dfs_ludr_stats.txt");
@@ -63,7 +63,7 @@ TEST(ConfigTest, thirdInvocation)
   auto config = configParser.createConfig();
 
   EXPECT_EQ(config.strategy, Constants::Strategy::ASTR);
-  EXPECT_EQ(std::get<Constants::Heuristic>(config.orderOrHeuristic), Constants::Heuristic::MANH);
+  EXPECT_EQ(std::get<Constants::Heuristic>(config.strategyParam), Constants::Heuristic::MANH);
   EXPECT_EQ(config.firstStateFileName, "4x4_01_0001.txt");
   EXPECT_EQ(config.solutionFileName, "4x4_01_0001_astr_manh_sol.txt");
   EXPECT_EQ(config.additionalInfoFileName, "4x4_01_0001_astr_manh_stats.txt");
