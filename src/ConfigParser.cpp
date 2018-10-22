@@ -36,7 +36,7 @@ auto ConfigParser::parseStrategy(std::string const& env) -> Constants::Strategy
     }
   }
 
-  throw std::logic_error{ "Bad strategy variable" };
+  throw std::invalid_argument{ "Bad strategy variable" };
 }
 
 auto ConfigParser::parseHeuristic(std::string const& env) -> Constants::Heuristic
@@ -47,7 +47,7 @@ auto ConfigParser::parseHeuristic(std::string const& env) -> Constants::Heuristi
     }
   }
 
-  throw std::logic_error{ "Bad heuristic variable" };
+  throw std::invalid_argument{ "Bad heuristic variable" };
 }
 
 auto ConfigParser::parseOrder(std::string const& env) -> Constants::Order
@@ -58,5 +58,5 @@ auto ConfigParser::parseOrder(std::string const& env) -> Constants::Order
     }
   }
 
-  throw std::logic_error{ "Bad order variable" };
+  throw std::invalid_argument{ "Bad order variable" };
 }
