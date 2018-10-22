@@ -4,5 +4,7 @@
 
 struct State
 {
-  std::vector<std::uint8_t> sequence;
+  std::uint8_t col;
+  std::uint8_t row;
+  std::vector<std::uint8_t> board;
 };
