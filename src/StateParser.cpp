@@ -52,11 +52,7 @@ auto StateParser::parse() -> std::unique_ptr<State>
     numbers.pop();
   }
 
-  auto state = std::make_unique<State>();
-
-  state->board = std::move(board);
-  state->col = col;
-  state->row = row;
+  auto state = std::make_unique<State>(col, board);
 
   return state;
 }
