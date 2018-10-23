@@ -6,8 +6,6 @@
 class State
 {
 public:
-  State(std::uint8_t col, std::vector<std::uint8_t> board);
-
   enum class Operator
   {
     Left,
@@ -15,6 +13,10 @@ public:
     Up,
     Down,
   };
+
+  State(std::uint8_t col, std::vector<std::uint8_t> board);
+  auto operator==(State const& rhs) -> bool;
+  auto operator!=(State const& rhs) -> bool;
 
   template<Operator>
   auto takeAction() -> State&;

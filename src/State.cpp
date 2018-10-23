@@ -13,6 +13,16 @@ State::State(std::uint8_t col, std::vector<std::uint8_t> board)
   }
 }
 
+auto State::operator==(State const& rhs) -> bool
+{
+  return this->board == rhs.board;
+}
+
+auto State::operator!=(State const& rhs) -> bool
+{
+  return this->board != rhs.board;
+}
+
 template<>
 auto State::canMove<State::Operator::Left>() -> bool
 {
