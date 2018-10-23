@@ -27,8 +27,6 @@ auto StateParser::parse() -> std::unique_ptr<State>
   }
   firstStateFile.close();
 
-  std::cout << rawLines.size() << " MAMEEEE" << std::endl;
-
   auto numbers = std::queue<std::uint8_t>{};
 
   while (!rawLines.empty()) {
@@ -60,8 +58,5 @@ auto StateParser::parse() -> std::unique_ptr<State>
   state->col = col;
   state->row = row;
 
-  for (auto x : state->board) {
-    std::cout << +x << " ";
-  }
   return state;
 }
