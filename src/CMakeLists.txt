@@ -1,4 +1,16 @@
-set(src_files App.cpp Config.cpp ConfigParser.cpp Constants.cpp Node.cpp State.cpp StateParser.cpp)
+set(src_files
+  AstrStrategy.cpp
+  BfsStrategy.cpp
+  App.cpp
+  Config.cpp
+  ConfigParser.cpp
+  Constants.cpp
+  DfsStrategy.cpp
+  Node.cpp
+  State.cpp
+  StateParser.cpp
+  Strategy.cpp)
+
 add_library(${proj_name}_lib ${src_files})
 add_executable(${proj_name} main.cpp)
 target_link_libraries(${proj_name} ${proj_name}_lib)
