@@ -15,7 +15,7 @@ public:
     Down,
   };
 
-  State(std::uint8_t col, std::vector<std::uint8_t> board);
+  State(std::uint8_t row, std::uint8_t col, std::vector<std::uint8_t> board);
 
   State(State const&) = default;
   auto operator=(State const&) -> State& = default;
@@ -30,6 +30,7 @@ public:
   auto takeAction() -> bool;
 
   auto getCol() const -> std::uint8_t;
+  auto getRow() const -> std::uint8_t;
   auto toString() const -> std::string;
 
 private:
@@ -42,6 +43,7 @@ private:
   auto takeActionInternal(int zeroPosShift) -> bool;
 
   std::uint8_t col;
+  std::uint8_t row;
   std::size_t zeroPos;
   std::vector<std::uint8_t> board;
 

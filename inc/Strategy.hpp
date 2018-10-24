@@ -13,9 +13,13 @@ public:
 
   virtual ~Strategy() = default;
 
+  auto init() -> void;
+
 protected:
-  auto getState() -> State&;
+  auto getOperatedState() -> State&;
+  auto getWantedState() const -> State const&;
 
 private:
-  State state;
+  State operatedState;
+  State wantedState;
 };

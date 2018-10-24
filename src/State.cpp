@@ -2,8 +2,9 @@
 #include <iomanip>
 #include <sstream>
 
-State::State(std::uint8_t col, std::vector<std::uint8_t> board)
-  : col{ col }
+State::State(std::uint8_t row, std::uint8_t col, std::vector<std::uint8_t> board)
+  : row{ row }
+  , col{ col }
   , zeroPos{ 0 }
   , board{ std::move(board) }
 {
@@ -95,6 +96,11 @@ auto State::takeAction<State::Operator::Down>() -> bool
 auto State::getCol() const -> std::uint8_t
 {
   return col;
+}
+
+auto State::getRow() const -> std::uint8_t
+{
+  return row;
 }
 
 auto State::toString() const -> std::string

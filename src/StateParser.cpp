@@ -52,5 +52,5 @@ auto StateParser::parse() -> State
     numbers.pop();
   }
 
-  return { col, board };
+  return { row, col, board };
 }
