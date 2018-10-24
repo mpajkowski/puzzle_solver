@@ -11,6 +11,6 @@ TEST(StateTest, readingFile)
   auto stateParser = StateParser{ "../../test/test_puzzle.txt" };
   auto state = stateParser.parse();
 
-  ASSERT_EQ(state->board.size(), BOARD_SIZE);
-  ASSERT_EQ(state->col, COL);
+  ASSERT_EQ(state.board.size(), BOARD_SIZE);
+  ASSERT_EQ(state.col, COL);
 }

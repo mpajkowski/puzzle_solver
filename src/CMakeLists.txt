@@ -7,6 +7,7 @@ set(src_files
   Constants.cpp
   DfsStrategy.cpp
   Node.cpp
+  ResultsManager.cpp
   State.cpp
   StateParser.cpp
   Strategy.cpp)

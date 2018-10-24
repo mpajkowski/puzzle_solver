@@ -1,16 +1,12 @@
 #include "BfsStrategy.hpp"
 #include "State.hpp"
 
-BfsStrategy::BfsStrategy(std::unique_ptr<State> state)
+BfsStrategy::BfsStrategy(State state, Constants::Order order)
   : Strategy{ std::move(state) }
+  , order{ order }
 {}
 
-auto BfsStrategy::findSolution() -> std::tuple<uint64_t, // solution length
-                                               uint64_t, // visited states count
-                                               uint64_t, // processed states count
-                                               uint64_t, // max recursion depth
-                                               std::chrono::seconds>
+auto BfsStrategy::findSolution() -> Solution
 {
-  // TODO implement
   return {};
 }

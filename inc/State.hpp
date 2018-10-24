@@ -15,6 +15,12 @@ public:
   };
 
   State(std::uint8_t col, std::vector<std::uint8_t> board);
+  State(State const&) = default;
+  auto operator=(State const&) -> State& = default;
+  State(State&&) = default;
+  auto operator=(State &&) -> State& = default;
+  ~State() = default;
+
   auto operator==(State const& rhs) -> bool;
   auto operator!=(State const& rhs) -> bool;
 

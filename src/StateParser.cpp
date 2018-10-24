@@ -9,7 +9,7 @@ StateParser::StateParser(std::string const& firstStateFileName)
   : firstStateFileName{ firstStateFileName }
 {}
 
-auto StateParser::parse() -> std::unique_ptr<State>
+auto StateParser::parse() -> State
 {
   auto firstStateFile = std::fstream{ firstStateFileName };
   if (!firstStateFile.is_open()) {
@@ -52,7 +52,5 @@ auto StateParser::parse() -> std::unique_ptr<State>
     numbers.pop();
   }
 
-  auto state = std::make_unique<State>(col, board);
-
-  return state;
+  return { col, board };
 }
