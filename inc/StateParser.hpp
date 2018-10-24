@@ -1,10 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <fstream>
 #include <memory>
 #include <string>
-#include <vector>
 
 class State;
 
