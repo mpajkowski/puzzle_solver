@@ -2,8 +2,8 @@
 #include "Config.hpp"
 #include <memory>
 
-class Strategy;
-class ResultsManager;
+#include "ResultsManager.hpp"
+#include "Strategy.hpp"
 
 class App
 {

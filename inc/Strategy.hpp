@@ -9,7 +9,7 @@ class Strategy
 {
 public:
   Strategy(State state);
-  virtual auto findSolution() -> Solution;
+  virtual auto findSolution() -> Solution = 0;
 
   virtual ~Strategy() = default;
 

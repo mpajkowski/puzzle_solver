@@ -29,6 +29,7 @@ public:
   template<Operator>
   auto takeAction() -> bool;
 
+  auto getCol() const -> std::uint8_t;
   auto toString() const -> std::string;
 
 private:
@@ -40,7 +41,7 @@ private:
   template<Operator>
   auto takeActionInternal(int zeroPosShift) -> bool;
 
-  int col;
+  std::uint8_t col;
   std::size_t zeroPos;
   std::vector<std::uint8_t> board;
 
@@ -48,5 +49,3 @@ private:
 
   friend auto operator<<(std::ostream& os, State const&) -> std::ostream&;
 };
-
-auto operator<<(std::ostream& os, State const&) -> std::ostream&;

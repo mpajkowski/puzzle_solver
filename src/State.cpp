@@ -92,11 +92,16 @@ auto State::takeAction<State::Operator::Down>() -> bool
   return takeActionInternal<State::Operator::Down>(+col);
 }
 
+auto State::getCol() const -> std::uint8_t
+{
+  return col;
+}
+
 auto State::toString() const -> std::string
 {
   auto stream = std::ostringstream{};
 
-  stream << "Columns: " << col << ", board: {";
+  stream << "Columns: " << static_cast<int>(col) << ", board: {";
 
   for (auto number : board) {
     stream << std::setw(3) << static_cast<int>(number) << ' ';

@@ -1,3 +1,4 @@
+#include "App.hpp"
 #include "ConfigParser.hpp"
 #include "State.hpp"
 #include "StateParser.hpp"
@@ -7,8 +8,7 @@ auto main(int argc, char** argv) -> int
 {
   auto cp = ConfigParser{ argc, argv };
   auto cfg = cp.createConfig();
-  auto stateParser = StateParser{ cfg.firstStateFileName };
-  auto test = stateParser.parse();
+  auto app = App{ cfg };
 
   return 0;
 }
