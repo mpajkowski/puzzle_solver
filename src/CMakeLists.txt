@@ -1,12 +1,11 @@
 set(src_files
   AstrStrategy.cpp
-  BfsStrategy.cpp
   App.cpp
+  BfsStrategy.cpp
   Config.cpp
   ConfigParser.cpp
   Constants.cpp
   DfsStrategy.cpp
-  Node.cpp
   ResultsManager.cpp
   State.cpp
   StateParser.cpp
