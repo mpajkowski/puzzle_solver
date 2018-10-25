@@ -2,8 +2,8 @@
 #include "State.hpp"
 #include <numeric>
 
-Strategy::Strategy(State inputState)
-  : operatedState{ std::move(inputState) }
+Strategy::Strategy(State initialState)
+  : operatedState{ std::move(initialState) }
   , wantedState{ 1, 1, { 0 } }
 {
   init();

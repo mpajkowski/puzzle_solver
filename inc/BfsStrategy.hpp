@@ -4,7 +4,7 @@
 class BfsStrategy : public Strategy
 {
 public:
-  BfsStrategy(State state, Constants::Order order);
+  BfsStrategy(State initialState, Constants::Order order);
   auto findSolution() -> Solution;
 
 private:

@@ -4,7 +4,7 @@
 class DfsStrategy : public Strategy
 {
 public:
-  DfsStrategy(State state, Constants::Order order);
+  DfsStrategy(State initialState, Constants::Order order);
   auto findSolution() -> Solution;
 
 private:

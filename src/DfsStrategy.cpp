@@ -1,8 +1,8 @@
 #include "DfsStrategy.hpp"
 #include "State.hpp"
 
-DfsStrategy::DfsStrategy(State state, Constants::Order order)
-  : Strategy{ std::move(state) }
+DfsStrategy::DfsStrategy(State initialState, Constants::Order order)
+  : Strategy{ std::move(initialState) }
   , order{ order }
 {}
 

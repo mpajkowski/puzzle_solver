@@ -1,8 +1,8 @@
 #include "BfsStrategy.hpp"
 #include "State.hpp"
 
-BfsStrategy::BfsStrategy(State state, Constants::Order order)
-  : Strategy{ std::move(state) }
+BfsStrategy::BfsStrategy(State initialState, Constants::Order order)
+  : Strategy{ std::move(initialState) }
   , order{ order }
 {}
 

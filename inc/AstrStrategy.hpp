@@ -4,6 +4,6 @@
 class AstrStrategy : public Strategy
 {
 public:
-  AstrStrategy(State state);
+  AstrStrategy(State initialState);
   auto findSolution() -> Solution;
 };
