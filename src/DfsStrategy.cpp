@@ -1,12 +1,11 @@
 #include "DfsStrategy.hpp"
 #include "State.hpp"
 
-DfsStrategy::DfsStrategy(State initialState, Constants::Order order)
-  : Strategy{ std::move(initialState) }
-  , order{ order }
+DfsStrategy::DfsStrategy(Constants::Order order)
+  : order{ order }
 {}
 
-auto DfsStrategy::findSolution() -> Solution
+auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 {
   // TODO implement
   return {};

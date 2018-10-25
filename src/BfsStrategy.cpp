@@ -1,12 +1,11 @@
 #include "BfsStrategy.hpp"
 #include "State.hpp"
 
-BfsStrategy::BfsStrategy(State initialState, Constants::Order order)
-  : Strategy{ std::move(initialState) }
-  , order{ order }
+BfsStrategy::BfsStrategy(Constants::Order order)
+  : order{ order }
 {}
 
-auto BfsStrategy::findSolution() -> Solution
+auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 {
   return {};
 }

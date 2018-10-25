@@ -9,7 +9,8 @@ set(src_files
   ResultsManager.cpp
   State.cpp
   StateParser.cpp
-  Strategy.cpp)
+  Strategy.cpp
+  StrategyContext.cpp)
 
 add_library(${proj_name}_lib ${src_files})
 add_executable(${proj_name} main.cpp)

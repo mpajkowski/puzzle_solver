@@ -1,9 +1,9 @@
 #pragma once
 #include "Config.hpp"
-#include <memory>
-
 #include "ResultsManager.hpp"
 #include "Strategy.hpp"
+#include "StrategyContext.hpp"
+#include <memory>
 
 class App
 {

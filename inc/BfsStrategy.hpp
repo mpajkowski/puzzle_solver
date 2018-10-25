@@ -1,11 +1,14 @@
 #pragma once
+#include "Constants.hpp"
 #include "Strategy.hpp"
+
+class StrategyContext;
 
 class BfsStrategy : public Strategy
 {
 public:
-  BfsStrategy(State initialState, Constants::Order order);
-  auto findSolution() -> Solution;
+  BfsStrategy(Constants::Order order);
+  auto findSolution(StrategyContext&& strategyContext) -> Solution override;
 
 private:
   Constants::Order order;
