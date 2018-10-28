@@ -16,10 +16,12 @@ auto ConfigParser::createConfig() -> Config
   cfg.strategy = parseStrategy(*envIterator++);
 
   if (cfg.strategy == Constants::Strategy::ASTR) {
-    cfg.strategyParam = parseHeuristic(*envIterator++);
+    cfg.strategyParam = parseHeuristic(*envIterator);
   } else {
-    cfg.strategyParam = parseOrder(*envIterator++);
+    cfg.strategyParam = *envIterator;
   }
+
+  ++envIterator;
 
   cfg.firstStateFileName = *envIterator++;
   cfg.solutionFileName = *envIterator++;
@@ -48,15 +50,4 @@ auto ConfigParser::parseHeuristic(std::string const& env) -> Constants::Heuristi
   }
 
   throw std::invalid_argument{ "Bad heuristic variable" };
-}
-
-auto ConfigParser::parseOrder(std::string const& env) -> Constants::Order
-{
-  for (auto const& it : Constants::order2string) {
-    if (it.second == env) {
-      return it.first;
-    }
-  }
-
-  throw std::invalid_argument{ "Bad order variable" };
 }

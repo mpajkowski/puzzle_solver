@@ -2,27 +2,27 @@
 #include "State.hpp"
 #include <numeric>
 
-StrategyContext::StrategyContext(State initialState)
-  : operatedState{ std::move(initialState) }
-  , wantedState{ 1, 1, { 0 } }
+StrategyContext::StrategyContext(std::shared_ptr<State> initialState)
+  : initialState{ initialState }
+  , goalState{ 1, 1, { 0 } }
 {
   init();
 }
 
 auto StrategyContext::init() -> void
 {
-  auto wantedBoard = std::vector<std::uint8_t>(operatedState.getRow() * operatedState.getCol());
-  std::iota(std::begin(wantedBoard), std::end(wantedBoard) - 1, 1);
-  wantedBoard.back() = 0;
-  wantedState = State{ operatedState.getRow(), operatedState.getCol(), std::move(wantedBoard) };
+  auto board = std::vector<std::uint8_t>(initialState->getRow() * initialState->getCol());
+  std::iota(std::begin(board), std::end(board) - 1, 1);
+  board.back() = 0;
+  goalState = State{ initialState->getRow(), initialState->getCol(), std::move(board) };
 }
 
-auto StrategyContext::getOperatedState() -> State&
+auto StrategyContext::getInitialState() -> std::shared_ptr<State>
 {
-  return operatedState;
+  return initialState;
 }
 
-auto StrategyContext::getWantedState() const -> State const&
+auto StrategyContext::getGoalState() const -> State const&
 {
-  return wantedState;
+  return goalState;
 }

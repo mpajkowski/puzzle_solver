@@ -28,7 +28,7 @@ auto State::operator==(State const& rhs) const -> bool
 
 auto State::operator!=(State const& rhs) const -> bool
 {
-  return this->board != rhs.board;
+  return !(operator==(rhs));
 }
 
 template<>
@@ -56,41 +56,31 @@ auto State::canMove<State::Operator::Down>() -> bool
 }
 
 template<State::Operator Op>
-auto State::takeActionInternal(int zeroPosShift) -> bool
+auto State::moveInternal(int zeroPosShift) -> std::optional<State::Operator>
 {
   if (canMove<Op>()) {
     std::swap(board[zeroPos], board[zeroPos + zeroPosShift]);
 
     // update cache
     zeroPos += zeroPosShift;
-    return true;
+    return Op;
   }
 
-  return false;
+  return std::nullopt;
 }
 
-template<>
-auto State::takeAction<State::Operator::Left>() -> bool
+auto State::move(State::Operator op) -> std::optional<State::Operator>
 {
-  return takeActionInternal<State::Operator::Left>(-1);
-}
-
-template<>
-auto State::takeAction<State::Operator::Right>() -> bool
-{
-  return takeActionInternal<State::Operator::Right>(+1);
-}
-
-template<>
-auto State::takeAction<State::Operator::Up>() -> bool
-{
-  return takeActionInternal<State::Operator::Up>(-col);
-}
-
-template<>
-auto State::takeAction<State::Operator::Down>() -> bool
-{
-  return takeActionInternal<State::Operator::Down>(+col);
+  switch (op) {
+    case State::Operator::Left:
+      return moveInternal<State::Operator::Left>(-1);
+    case State::Operator::Right:
+      return moveInternal<State::Operator::Right>(+1);
+    case State::Operator::Up:
+      return moveInternal<State::Operator::Up>(-col);
+    case State::Operator::Down:
+      return moveInternal<State::Operator::Down>(+col);
+  }
 }
 
 auto State::getCol() const -> std::uint8_t

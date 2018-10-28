@@ -1,7 +1,7 @@
 #include "DfsStrategy.hpp"
 #include "State.hpp"
 
-DfsStrategy::DfsStrategy(Constants::Order order)
+DfsStrategy::DfsStrategy(std::string const& order)
   : order{ order }
 {}
 

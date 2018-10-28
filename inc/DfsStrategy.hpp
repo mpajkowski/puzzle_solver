@@ -7,9 +7,9 @@ class StrategyContext;
 class DfsStrategy : public Strategy
 {
 public:
-  DfsStrategy(Constants::Order order);
+  DfsStrategy(std::string const& order);
   auto findSolution(StrategyContext&& strategyContext) -> Solution override;
 
 private:
-  Constants::Order order;
+  std::string order;
 };

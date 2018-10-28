@@ -9,7 +9,7 @@ StateParser::StateParser(std::string const& firstStateFileName)
   : firstStateFileName{ firstStateFileName }
 {}
 
-auto StateParser::parse() -> State
+auto StateParser::parse() -> std::shared_ptr<State>
 {
   auto firstStateFile = std::fstream{ firstStateFileName };
   if (!firstStateFile.is_open()) {
@@ -52,5 +52,5 @@ auto StateParser::parse() -> State
     numbers.pop();
   }
 
-  return { row, col, board };
+  return std::make_shared<State>(row, col, board);
 }

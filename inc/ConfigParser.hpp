@@ -14,6 +14,5 @@ public:
 private:
   auto parseStrategy(std::string const& env) -> Constants::Strategy;
   auto parseHeuristic(std::string const& env) -> Constants::Heuristic;
-  auto parseOrder(std::string const& env) -> Constants::Order;
   std::vector<std::string> envs;
 };

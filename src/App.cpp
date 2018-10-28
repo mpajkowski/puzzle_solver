@@ -26,16 +26,17 @@ auto App::run() -> void
 
   // dispatch solution to ResultsManager
   resultsManager = std::make_unique<ResultsManager>(config, std::move(solution));
+  resultsManager->saveData();
 }
 
 auto App::init() -> void
 {
   switch (config.strategy) {
     case Constants::Strategy::BFS:
-      strategy = std::make_unique<BfsStrategy>(std::get<Constants::Order>(config.strategyParam));
+      strategy = std::make_unique<BfsStrategy>(std::get<std::string>(config.strategyParam));
       break;
     case Constants::Strategy::DFS:
-      strategy = std::make_unique<DfsStrategy>(std::get<Constants::Order>(config.strategyParam));
+      strategy = std::make_unique<DfsStrategy>(std::get<std::string>(config.strategyParam));
       break;
     case Constants::Strategy::ASTR:
       strategy = std::make_unique<AstrStrategy>();

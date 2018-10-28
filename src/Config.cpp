@@ -7,8 +7,8 @@ auto Config::toString() const -> std::string
 
   os << "Strategy: " << Constants::strategy2string.at(strategy) << "\n";
 
-  if (std::holds_alternative<Constants::Order>(strategyParam)) {
-    os << "Order: " << Constants::order2string.at(std::get<Constants::Order>(strategyParam));
+  if (std::holds_alternative<std::string>(strategyParam)) {
+    os << "Order: " << std::get<std::string>(strategyParam);
   } else {
     os << "Heuristic: " << Constants::heuristic2string.at(std::get<Constants::Heuristic>(strategyParam));
   }
