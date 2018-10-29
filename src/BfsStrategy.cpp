@@ -49,7 +49,8 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   auto frontier = std::queue<std::shared_ptr<Node>>{};
   auto explored = std::unordered_set<std::shared_ptr<State>>{};
 
-  frontier.push(std::make_shared<Node>(nullptr, initialState));
+  auto root = std::make_shared<Node>(nullptr, initialState);
+  frontier.push(root);
 
   while (!frontier.empty()) {
     auto& currNode = frontier.front();
@@ -58,6 +59,7 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 
     if (*currState == goalState) {
       std::cout << "halo" << std::endl;
+      std::cout << *currState << std::endl;
       break;
     }
 
@@ -67,9 +69,10 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     }
 
     for (State::Operator op : order) {
-      auto moveExists = currState->move(op);
+      auto newState = std::make_shared<State>(*currState);
+      auto moveExists = newState->move(op);
       if (moveExists) {
-        frontier.push(std::make_shared<Node>(currNode, currState, op));
+        frontier.push(std::make_shared<Node>(currNode, newState, op));
       }
     }
 

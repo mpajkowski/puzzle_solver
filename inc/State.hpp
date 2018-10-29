@@ -14,7 +14,7 @@ public:
     Left = 'L',
     Right = 'R',
     Up = 'U',
-    Down = 'D',
+    Down = 'D'
   };
 
   State(std::uint8_t row, std::uint8_t col, std::vector<std::uint8_t> board);

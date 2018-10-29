@@ -52,7 +52,7 @@ auto State::canMove<State::Operator::Up>() -> bool
 template<>
 auto State::canMove<State::Operator::Down>() -> bool
 {
-  return zeroPos < board.size() - col - 1;
+  return zeroPos < board.size() - col;
 }
 
 template<State::Operator Op>
@@ -97,13 +97,17 @@ auto State::toString() const -> std::string
 {
   auto stream = std::ostringstream{};
 
-  stream << "Columns: " << static_cast<int>(col) << ", board: {";
+  stream << "{";
 
-  for (auto number : board) {
-    stream << std::setw(3) << static_cast<int>(number) << ' ';
+  for (std::size_t i = 0; i < board.size(); ++i) {
+    if (i % col == 0) {
+      stream << "\n";
+    }
+
+    stream << std::setw(3) << static_cast<int>(board[i]) << ' ';
   }
 
-  stream << " }";
+  stream << "\n}";
 
   return stream.str();
 }
