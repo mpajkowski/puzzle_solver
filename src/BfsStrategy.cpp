@@ -50,21 +50,19 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   auto explored = std::unordered_set<std::shared_ptr<State>>{};
 
   auto root = std::make_shared<Node>(nullptr, initialState);
+  auto goal = std::shared_ptr<Node>{ nullptr };
   frontier.push(root);
 
   while (!frontier.empty()) {
     auto& currNode = frontier.front();
     auto currState = currNode->getState();
-    frontier.pop();
 
     if (*currState == goalState) {
-      std::cout << "halo" << std::endl;
-      std::cout << *currState << std::endl;
+      goal = std::make_shared<Node>(*currNode);
       break;
     }
 
-    if (auto exploredIt = std::find(std::begin(explored), std::end(explored), currState);
-        exploredIt != std::end(explored)) {
+    if (explored.find(currState) != std::end(explored)) {
       continue;
     }
 
@@ -76,16 +74,21 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
       }
     }
 
+    frontier.pop();
     explored.insert(currState);
   }
 
   auto operatorStr = std::string{};
-  std::uint64_t visitedStatesCount{};
-  std::uint64_t processedStatesCount{};
+
+  for (auto it = goal; goal->getParent() != nullptr; goal = goal->getParent()) {
+    operatorStr += static_cast<std::underlying_type<State::Operator>::type>(goal->getOp().value());
+  }
+
+  std::reverse(std::begin(operatorStr), std::end(operatorStr));
 
   return { operatorStr,
-           visitedStatesCount,
-           processedStatesCount,
+           explored.size(),
+           0,
            0,
            std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
 }
