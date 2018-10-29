@@ -3,6 +3,7 @@
 #include "State.hpp"
 #include "StrategyContext.hpp"
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <queue>
 #include <unordered_map>
@@ -11,6 +12,8 @@
 BfsStrategy::BfsStrategy(std::string const& order)
   : order{}
 {
+  // TODO move that somewhere
+  // probably it should be moved to StateParse class
   // map 'raw' char operators to typesafe operators
   for (char ch : order) {
     switch (ch) {
@@ -44,22 +47,33 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   }
 
   auto frontier = std::queue<std::shared_ptr<Node>>{};
-  auto explored = std::unordered_set<State>{};
+  auto explored = std::unordered_set<std::shared_ptr<State>>{};
 
   frontier.push(std::make_shared<Node>(nullptr, initialState));
 
   while (!frontier.empty()) {
     auto& currNode = frontier.front();
-    auto& currState = *currNode->getState();
+    auto currState = currNode->getState();
+    frontier.pop();
 
-    if (currState == goalState)
+    if (*currState == goalState) {
+      std::cout << "halo" << std::endl;
       break;
-    // finished right here
-    for (State::Operator it : order) {
-      currState.move(it);
     }
 
-    frontier.pop();
+    if (auto exploredIt = std::find(std::begin(explored), std::end(explored), currState);
+        exploredIt != std::end(explored)) {
+      continue;
+    }
+
+    for (State::Operator op : order) {
+      auto moveExists = currState->move(op);
+      if (moveExists) {
+        frontier.push(std::make_shared<Node>(currNode, currState, op));
+      }
+    }
+
+    explored.insert(currState);
   }
 
   auto operatorStr = std::string{};
