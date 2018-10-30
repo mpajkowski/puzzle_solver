@@ -6,6 +6,7 @@ set(src_files
   ConfigParser.cpp
   Constants.cpp
   DfsStrategy.cpp
+  Node.cpp
   ResultsManager.cpp
   State.cpp
   StateParser.cpp
