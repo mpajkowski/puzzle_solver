@@ -12,6 +12,5 @@ public:
   auto findSolution(StrategyContext&& strategyContext) -> Solution override;
 
 private:
-  auto init() -> void;
   std::vector<State::Operator> order;
 };
