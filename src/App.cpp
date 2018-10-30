@@ -33,10 +33,10 @@ auto App::init() -> void
 {
   switch (config.strategy) {
     case Constants::Strategy::BFS:
-      strategy = std::make_unique<BfsStrategy>(std::get<std::string>(config.strategyParam));
+      strategy = std::make_unique<BfsStrategy>(std::get<std::vector<State::Operator>>(config.strategyParam));
       break;
     case Constants::Strategy::DFS:
-      strategy = std::make_unique<DfsStrategy>(std::get<std::string>(config.strategyParam));
+      strategy = std::make_unique<DfsStrategy>(std::get<std::vector<State::Operator>>(config.strategyParam));
       break;
     case Constants::Strategy::ASTR:
       strategy = std::make_unique<AstrStrategy>();

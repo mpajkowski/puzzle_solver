@@ -8,7 +8,7 @@ class StrategyContext;
 class BfsStrategy : public Strategy
 {
 public:
-  BfsStrategy(std::string const& order);
+  BfsStrategy(std::vector<State::Operator> const& order);
   auto findSolution(StrategyContext&& strategyContext) -> Solution override;
 
 private:

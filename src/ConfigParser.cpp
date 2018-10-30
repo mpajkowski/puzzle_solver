@@ -1,5 +1,7 @@
 #include "ConfigParser.hpp"
+#include "State.hpp"
 #include <stdexcept>
+#include <unordered_set>
 
 ConfigParser::ConfigParser(int argc, char** argv)
 {
@@ -18,7 +20,7 @@ auto ConfigParser::createConfig() -> Config
   if (cfg.strategy == Constants::Strategy::ASTR) {
     cfg.strategyParam = parseHeuristic(*envIterator);
   } else {
-    cfg.strategyParam = *envIterator;
+    cfg.strategyParam = parseOrder(*envIterator);
   }
 
   ++envIterator;
@@ -50,4 +52,36 @@ auto ConfigParser::parseHeuristic(std::string const& env) -> Constants::Heuristi
   }
 
   throw std::invalid_argument{ "Bad heuristic variable" };
+}
+
+auto ConfigParser::parseOrder(std::string const& env) -> std::vector<State::Operator>
+{
+  auto orderVec = std::vector<State::Operator>{};
+  auto uniqueValidator = std::unordered_set<char>{};
+
+  for (char ch : env) {
+    if (uniqueValidator.find(ch) != std::end(uniqueValidator)) {
+      throw std::invalid_argument{ "Typed same number twice" };
+    }
+
+    uniqueValidator.insert(ch);
+
+    switch (ch) {
+      case 'L':
+        orderVec.push_back(State::Operator::Left);
+        break;
+      case 'R':
+        orderVec.push_back(State::Operator::Right);
+        break;
+      case 'U':
+        orderVec.push_back(State::Operator::Up);
+        break;
+      case 'D':
+        orderVec.push_back(State::Operator::Down);
+        break;
+      default:
+        throw std::invalid_argument{ "wrong char for move sequence" };
+    }
+  }
+  return orderVec;
 }

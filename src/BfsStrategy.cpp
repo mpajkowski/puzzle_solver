@@ -9,31 +9,9 @@
 #include <unordered_map>
 #include <unordered_set>
 
-BfsStrategy::BfsStrategy(std::string const& order)
-  : order{}
-{
-  // TODO move that somewhere
-  // probably it should be moved to StateParse class
-  // map 'raw' char operators to typesafe operators
-  for (char ch : order) {
-    switch (ch) {
-      case 'L':
-        this->order.push_back(State::Operator::Left);
-        break;
-      case 'R':
-        this->order.push_back(State::Operator::Right);
-        break;
-      case 'U':
-        this->order.push_back(State::Operator::Up);
-        break;
-      case 'D':
-        this->order.push_back(State::Operator::Down);
-        break;
-      default:
-        throw std::invalid_argument{ "wrong char for move sequence" };
-    }
-  }
-}
+BfsStrategy::BfsStrategy(std::vector<State::Operator> const& order)
+  : order{ order }
+{}
 
 auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 {
