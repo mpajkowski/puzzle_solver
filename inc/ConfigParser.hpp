@@ -14,6 +14,6 @@ public:
 private:
   auto parseStrategy(std::string const& env) -> Constants::Strategy;
   auto parseHeuristic(std::string const& env) -> Constants::Heuristic;
-  auto parseOrder(std::string const& env) -> Constants::Order;
+  auto parseOrder(std::string const& env) -> std::vector<State::Operator>;
   std::vector<std::string> envs;
 };

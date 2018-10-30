@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Constants.hpp"
+#include "State.hpp"
 #include <variant>
 
 struct Config
@@ -8,7 +9,7 @@ struct Config
   auto toString() const -> std::string;
 
   Constants::Strategy strategy;
-  std::variant<Constants::Order, Constants::Heuristic> strategyParam;
+  std::variant<std::vector<State::Operator>, Constants::Heuristic> strategyParam;
 
   std::string firstStateFileName;
   std::string solutionFileName;

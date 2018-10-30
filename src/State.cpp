@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <sstream>
 
-State::State(std::uint8_t row, std::uint8_t col, std::vector<std::uint8_t> board)
+State::State(State::ValueType row, State::ValueType col, std::vector<State::ValueType> board)
   : row{ row }
   , col{ col }
   , zeroPos{ 0 }
@@ -28,7 +28,7 @@ auto State::operator==(State const& rhs) const -> bool
 
 auto State::operator!=(State const& rhs) const -> bool
 {
-  return this->board != rhs.board;
+  return !(operator==(rhs));
 }
 
 template<>
@@ -52,53 +52,43 @@ auto State::canMove<State::Operator::Up>() -> bool
 template<>
 auto State::canMove<State::Operator::Down>() -> bool
 {
-  return zeroPos < board.size() - col - 1;
+  return zeroPos < board.size() - col;
 }
 
 template<State::Operator Op>
-auto State::takeActionInternal(int zeroPosShift) -> bool
+auto State::moveInternal(int zeroPosShift) -> std::optional<State::Operator>
 {
   if (canMove<Op>()) {
     std::swap(board[zeroPos], board[zeroPos + zeroPosShift]);
 
     // update cache
     zeroPos += zeroPosShift;
-    return true;
+    return Op;
   }
 
-  return false;
+  return std::nullopt;
 }
 
-template<>
-auto State::takeAction<State::Operator::Left>() -> bool
+auto State::move(State::Operator op) -> std::optional<State::Operator>
 {
-  return takeActionInternal<State::Operator::Left>(-1);
+  switch (op) {
+    case State::Operator::Left:
+      return moveInternal<State::Operator::Left>(-1);
+    case State::Operator::Right:
+      return moveInternal<State::Operator::Right>(+1);
+    case State::Operator::Up:
+      return moveInternal<State::Operator::Up>(-col);
+    case State::Operator::Down:
+      return moveInternal<State::Operator::Down>(+col);
+  }
 }
 
-template<>
-auto State::takeAction<State::Operator::Right>() -> bool
-{
-  return takeActionInternal<State::Operator::Right>(+1);
-}
-
-template<>
-auto State::takeAction<State::Operator::Up>() -> bool
-{
-  return takeActionInternal<State::Operator::Up>(-col);
-}
-
-template<>
-auto State::takeAction<State::Operator::Down>() -> bool
-{
-  return takeActionInternal<State::Operator::Down>(+col);
-}
-
-auto State::getCol() const -> std::uint8_t
+auto State::getCol() const -> State::ValueType
 {
   return col;
 }
 
-auto State::getRow() const -> std::uint8_t
+auto State::getRow() const -> State::ValueType
 {
   return row;
 }
@@ -107,13 +97,17 @@ auto State::toString() const -> std::string
 {
   auto stream = std::ostringstream{};
 
-  stream << "Columns: " << static_cast<int>(col) << ", board: {";
+  stream << "{";
 
-  for (auto number : board) {
-    stream << std::setw(3) << static_cast<int>(number) << ' ';
+  for (std::size_t i = 0; i < board.size(); ++i) {
+    if (i % col == 0) {
+      stream << "\n";
+    }
+
+    stream << std::setw(3) << static_cast<int>(board[i]) << ' ';
   }
 
-  stream << " }";
+  stream << "\n}";
 
   return stream.str();
 }

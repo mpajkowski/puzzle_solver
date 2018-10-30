@@ -1,14 +1,15 @@
 #pragma once
 #include <chrono>
 #include <cstdint>
+#include <string>
 
 struct Solution
 {
-  uint64_t length;
+  std::string operators;
   uint64_t visitedStatesCount;
   uint64_t processedStatesCount;
   uint64_t maxRecursionDepth;
-  std::chrono::seconds duration;
+  std::chrono::milliseconds duration;
 
   Solution() = default;
 

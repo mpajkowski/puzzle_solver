@@ -6,6 +6,7 @@ class ResultsManager
 {
 public:
   ResultsManager(Config const& config, Solution solution);
+  auto saveData() -> void;
 
 private:
   Config config;

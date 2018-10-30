@@ -2,19 +2,18 @@
 #include "Constants.hpp"
 #include "Solution.hpp"
 #include "State.hpp"
-
-class State;
+#include <memory>
 
 class StrategyContext
 {
 public:
-  StrategyContext(State initialState);
+  StrategyContext(std::shared_ptr<State> initialState);
   auto init() -> void;
 
-  auto getOperatedState() -> State&;
-  auto getWantedState() const -> State const&;
+  auto getInitialState() -> std::shared_ptr<State>;
+  auto getGoalState() const -> State const&;
 
 private:
-  State operatedState;
-  State wantedState;
+  std::shared_ptr<State> initialState;
+  State goalState;
 };

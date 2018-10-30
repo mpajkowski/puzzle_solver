@@ -5,12 +5,19 @@ auto Config::toString() const -> std::string
 {
   auto os = std::ostringstream{};
 
-  os << "Strategy: " << Constants::strategy2string.at(strategy) << "\n";
+  os << "Strategy: " << Constants::strategy2string.at(strategy) << '\n';
 
-  if (std::holds_alternative<Constants::Order>(strategyParam)) {
-    os << "Order: " << Constants::order2string.at(std::get<Constants::Order>(strategyParam));
+  if (std::holds_alternative<std::vector<State::Operator>>(strategyParam)) {
+    os << "Order: ";
+
+    for (auto dir : std::get<std::vector<State::Operator>>(strategyParam)) {
+      os << static_cast<std::underlying_type<State::Operator>::type>(dir);
+    }
+
+    os << '\n';
   } else {
-    os << "Heuristic: " << Constants::heuristic2string.at(std::get<Constants::Heuristic>(strategyParam));
+    os << "Heuristic: " << Constants::heuristic2string.at(std::get<Constants::Heuristic>(strategyParam))
+       << '\n';
   }
 
   os << "First state file name: " << firstStateFileName;
