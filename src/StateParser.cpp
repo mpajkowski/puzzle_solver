@@ -27,22 +27,22 @@ auto StateParser::parse() -> std::shared_ptr<State>
   }
   firstStateFile.close();
 
-  auto numbers = std::queue<std::uint8_t>{};
+  auto numbers = std::queue<State::ValueType>{};
 
   while (!rawLines.empty()) {
     auto stream = std::stringstream{ rawLines.front() };
 
     // use int operator>> here - less pain
     for (int num; stream >> num;) {
-      numbers.push(static_cast<std::uint8_t>(num));
+      numbers.push(static_cast<State::ValueType>(num));
     }
 
     rawLines.pop();
   }
 
-  std::uint8_t row{ numbers.front() };
+  State::ValueType row{ numbers.front() };
   numbers.pop();
-  std::uint8_t col{ numbers.front() };
+  State::ValueType col{ numbers.front() };
   numbers.pop();
 
   std::vector<uint8_t> board{};

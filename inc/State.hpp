@@ -9,6 +9,8 @@
 class State
 {
 public:
+  using ValueType = std::uint_fast8_t;
+
   enum class Operator : char
   {
     Left = 'L',
@@ -17,7 +19,7 @@ public:
     Down = 'D'
   };
 
-  State(std::uint8_t row, std::uint8_t col, std::vector<std::uint8_t> board);
+  State(State::ValueType row, State::ValueType col, std::vector<State::ValueType> board);
 
   State(State const&) = default;
   auto operator=(State const&) -> State& = default;
@@ -30,8 +32,8 @@ public:
 
   auto move(Operator op) -> std::optional<Operator>;
 
-  auto getCol() const -> std::uint8_t;
-  auto getRow() const -> std::uint8_t;
+  auto getCol() const -> ValueType;
+  auto getRow() const -> ValueType;
   auto toString() const -> std::string;
 
 private:
@@ -43,10 +45,10 @@ private:
   template<Operator>
   auto moveInternal(int zeroPosShift) -> std::optional<Operator>;
 
-  std::uint8_t row;
-  std::uint8_t col;
+  ValueType row;
+  ValueType col;
   std::size_t zeroPos;
-  std::vector<std::uint8_t> board;
+  std::vector<ValueType> board;
 
   friend class StateTest_readingFile_Test;
 
@@ -59,7 +61,7 @@ struct std::hash<State>
 {
   std::size_t operator()(const State& s) const
   {
-    auto hasher = std::hash<uint8_t>{};
+    auto hasher = std::hash<State::ValueType>{};
     std::size_t seed = s.board.size();
     for (auto it : s.board) {
       seed ^= hasher(it) << 1;

@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <sstream>
 
-State::State(std::uint8_t row, std::uint8_t col, std::vector<std::uint8_t> board)
+State::State(State::ValueType row, State::ValueType col, std::vector<State::ValueType> board)
   : row{ row }
   , col{ col }
   , zeroPos{ 0 }
@@ -83,12 +83,12 @@ auto State::move(State::Operator op) -> std::optional<State::Operator>
   }
 }
 
-auto State::getCol() const -> std::uint8_t
+auto State::getCol() const -> State::ValueType
 {
   return col;
 }
 
-auto State::getRow() const -> std::uint8_t
+auto State::getRow() const -> State::ValueType
 {
   return row;
 }

@@ -19,7 +19,10 @@ TEST(ConfigTest, firstInvocation)
   auto config = configParser.createConfig();
 
   EXPECT_EQ(config.strategy, Constants::Strategy::BFS);
-  EXPECT_EQ(std::get<std::string>(config.strategyParam), "RDUL");
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[0], State::Operator::Right);
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[1], State::Operator::Down);
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[2], State::Operator::Up);
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[3], State::Operator::Left);
   EXPECT_EQ(config.firstStateFileName, "4x4_01_0001.txt");
   EXPECT_EQ(config.solutionFileName, "4x4_01_0001_bfs_rdul_sol.txt");
   EXPECT_EQ(config.additionalInfoFileName, "4x4_01_0001_bfs_rdul_stats.txt");
@@ -41,7 +44,10 @@ TEST(ConfigTest, secondInvocation)
   auto config = configParser.createConfig();
 
   EXPECT_EQ(config.strategy, Constants::Strategy::DFS);
-  EXPECT_EQ(std::get<std::string>(config.strategyParam), "LUDR");
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[0], State::Operator::Left);
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[1], State::Operator::Up);
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[2], State::Operator::Down);
+  EXPECT_EQ(std::get<std::vector<State::Operator>>(config.strategyParam)[3], State::Operator::Right);
   EXPECT_EQ(config.firstStateFileName, "4x4_01_0001.txt");
   EXPECT_EQ(config.solutionFileName, "4x4_01_0001_dfs_ludr_sol.txt");
   EXPECT_EQ(config.additionalInfoFileName, "4x4_01_0001_dfs_ludr_stats.txt");
