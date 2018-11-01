@@ -13,6 +13,8 @@ BfsStrategy::BfsStrategy(std::vector<State::Operator> const& order)
   : order{ order }
 {}
 
+using NodeT = Node<std::optional<State::Operator>>;
+
 auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 {
   auto t1 = Clock::now();
@@ -25,11 +27,11 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     return { "", 0, 0, 0, std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
   }
 
-  auto frontier = std::queue<std::shared_ptr<Node>>{};
+  auto frontier = std::queue<std::shared_ptr<NodeT>>{};
   auto explored = std::unordered_set<std::size_t>{};
 
-  auto root = std::make_shared<Node>(nullptr, initialState);
-  auto goal = std::shared_ptr<Node>{ nullptr };
+  auto root = std::make_shared<NodeT>(nullptr, initialState, std::nullopt);
+  auto goal = std::shared_ptr<NodeT>{ nullptr };
   frontier.push(root);
 
   while (!frontier.empty()) {
@@ -37,7 +39,7 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     auto currentState = currNode->getState();
 
     if (*currentState == goalState) {
-      goal = std::make_shared<Node>(*currNode);
+      goal = std::make_shared<NodeT>(*currNode);
       break;
     }
 
@@ -50,8 +52,9 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     for (State::Operator op : order) {
       auto newState = std::make_shared<State>(*currentState);
       auto moveExists = newState->move(op);
+
       if (moveExists) {
-        frontier.push(std::make_shared<Node>(currNode, newState, op));
+        frontier.push(std::make_shared<NodeT>(currNode, newState, op));
       }
     }
 
