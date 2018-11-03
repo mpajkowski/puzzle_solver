@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/functional/hash.hpp>
 #include <cstdint>
 #include <functional>
 #include <optional>
@@ -11,7 +12,7 @@ class State
 public:
   using ValueType = std::uint_fast8_t;
 
-  enum class Operator : char
+  enum class Operator : State::ValueType
   {
     Left = 'L',
     Right = 'R',
@@ -59,13 +60,9 @@ private:
 template<>
 struct std::hash<State>
 {
-  std::size_t operator()(const State& s) const
+  std::size_t operator()(State const& s) const
   {
-    auto hasher = std::hash<State::ValueType>{};
-    std::size_t seed = s.board.size();
-    for (auto it : s.board) {
-      seed ^= hasher(it) << 1;
-    }
+    auto seed = boost::hash_range(std::begin(s.board), std::end(s.board));
     return seed;
   }
 };

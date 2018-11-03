@@ -16,6 +16,7 @@ BfsStrategy::BfsStrategy(std::vector<State::Operator> const& order)
 auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 {
   auto t1 = Clock::now();
+  auto hasher = std::hash<State>{};
 
   auto initialState = strategyContext.getInitialState();
   auto const& goalState = strategyContext.getGoalState();
@@ -25,7 +26,7 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   }
 
   auto frontier = std::queue<std::shared_ptr<Node>>{};
-  auto explored = std::unordered_set<std::shared_ptr<State>>{};
+  auto explored = std::unordered_set<std::size_t>{};
 
   auto root = std::make_shared<Node>(nullptr, initialState);
   auto goal = std::shared_ptr<Node>{ nullptr };
@@ -33,19 +34,21 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 
   while (!frontier.empty()) {
     auto& currNode = frontier.front();
-    auto currState = currNode->getState();
+    auto currentState = currNode->getState();
 
-    if (*currState == goalState) {
+    if (*currentState == goalState) {
       goal = std::make_shared<Node>(*currNode);
       break;
     }
 
-    if (explored.find(currState) != std::end(explored)) {
+    auto currentStateHash = hasher(*currentState);
+    if (explored.find(currentStateHash) != std::end(explored)) {
+      frontier.pop();
       continue;
     }
 
     for (State::Operator op : order) {
-      auto newState = std::make_shared<State>(*currState);
+      auto newState = std::make_shared<State>(*currentState);
       auto moveExists = newState->move(op);
       if (moveExists) {
         frontier.push(std::make_shared<Node>(currNode, newState, op));
@@ -53,13 +56,14 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     }
 
     frontier.pop();
-    explored.insert(currState);
+    explored.insert(currentStateHash);
   }
 
   auto operatorStr = std::string{};
 
   for (auto it = goal; goal->getParent() != nullptr; goal = goal->getParent()) {
-    operatorStr += static_cast<std::underlying_type<State::Operator>::type>(goal->getOp().value());
+    auto currentOp = goal->getOp().value();
+    operatorStr += static_cast<std::underlying_type<State::Operator>::type>(currentOp);
   }
 
   std::reverse(std::begin(operatorStr), std::end(operatorStr));

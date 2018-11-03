@@ -45,7 +45,7 @@ auto StateParser::parse() -> std::shared_ptr<State>
   State::ValueType col{ numbers.front() };
   numbers.pop();
 
-  std::vector<uint8_t> board{};
+  std::vector<State::ValueType> board{};
 
   while (!numbers.empty()) {
     board.emplace_back(numbers.front());

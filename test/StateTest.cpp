@@ -188,4 +188,17 @@ TEST(StateTest, hashFunction)
   state.move(State::Operator::Up);
   set.insert(state);
   ASSERT_EQ(set.size(), 2);
-}
+
+  auto hasher = std::hash<State>{};
+  std::cout << "Sample hashes:\n" << std::hex;
+  std::cout << "\t" << hasher(State{ 4, 4, { 14, 12, 4, 9, 5, 10, 6, 1, 3, 13, 8, 7, 2, 11, 15, 0 } })
+            << '\n';
+  std::cout << "\t" << hasher(State{ 4, 4, { 14, 12, 4, 9, 5, 10, 6, 1, 3, 13, 8, 7, 2, 11, 0, 15 } })
+            << '\n';
+  std::cout << "\t" << hasher(State{ 4, 4, { 14, 12, 4, 9, 5, 10, 6, 1, 3, 13, 8, 7, 2, 0, 11, 15 } })
+            << '\n';
+  std::cout << "\t" << hasher(State{ 4, 4, { 14, 12, 4, 9, 5, 10, 6, 1, 3, 13, 8, 7, 0, 11, 15, 2 } })
+            << '\n';
+  std::cout << "\t" << hasher(State{ 4, 4, { 14, 12, 4, 9, 5, 10, 6, 1, 3, 13, 8, 0, 2, 11, 15, 7 } })
+            << std::endl;
+};

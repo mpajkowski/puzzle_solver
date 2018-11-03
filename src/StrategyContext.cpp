@@ -11,7 +11,7 @@ StrategyContext::StrategyContext(std::shared_ptr<State> initialState)
 
 auto StrategyContext::init() -> void
 {
-  auto board = std::vector<std::uint8_t>(initialState->getRow() * initialState->getCol());
+  auto board = std::vector<State::ValueType>(initialState->getRow() * initialState->getCol());
   std::iota(std::begin(board), std::end(board) - 1, 1);
   board.back() = 0;
   goalState = State{ initialState->getRow(), initialState->getCol(), std::move(board) };

@@ -13,5 +13,5 @@ auto ResultsManager::saveData() -> void
   std::cout << "VISITED STATES COUNT: " << solution.visitedStatesCount << "\n";
   std::cout << "PROCESSED STATES COUNT: " << solution.processedStatesCount << "\n";
   std::cout << "MAX RECURSION DEPTH: " << solution.maxRecursionDepth << "\n";
-  std::cout << "TIME: " << solution.duration.count() << std::endl;
+  std::cout << "TIME: " << solution.duration.count() << "ms" << std::endl;
 }
