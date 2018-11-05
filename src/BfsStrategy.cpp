@@ -61,7 +61,7 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 
   auto operatorStr = std::string{};
 
-  for (auto it = goal; goal->getParent() != nullptr; goal = goal->getParent()) {
+  for (auto it = goal; it->getParent() != nullptr; it = it->getParent()) {
     auto currentOp = goal->getOp().value();
     operatorStr += static_cast<std::underlying_type<State::Operator>::type>(currentOp);
   }
