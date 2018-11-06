@@ -11,6 +11,7 @@ class State
 {
 public:
   using ValueType = std::uint_fast8_t;
+  using Board = std::vector<State::ValueType>;
 
   enum class Operator : State::ValueType
   {
@@ -18,6 +19,12 @@ public:
     Right = 'R',
     Up = 'U',
     Down = 'D'
+  };
+
+  struct Point
+  {
+    State::ValueType x;
+    State::ValueType y;
   };
 
   State(State::ValueType row, State::ValueType col, std::vector<State::ValueType> board);
@@ -35,6 +42,8 @@ public:
 
   auto getCol() const -> ValueType;
   auto getRow() const -> ValueType;
+  auto getBoard() const -> Board const&;
+  auto indexToPos(std::size_t index) const -> Point;
   auto toString() const -> std::string;
 
 private:

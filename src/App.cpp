@@ -39,7 +39,7 @@ auto App::init() -> void
       strategy = std::make_unique<DfsStrategy>(std::get<std::vector<State::Operator>>(config.strategyParam));
       break;
     case Constants::Strategy::ASTR:
-      strategy = std::make_unique<AstrStrategy>();
+      strategy = std::make_unique<AstrStrategy>(std::get<Constants::Heuristic>(config.strategyParam));
       break;
   }
 }

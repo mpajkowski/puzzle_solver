@@ -93,6 +93,11 @@ auto State::getRow() const -> State::ValueType
   return row;
 }
 
+auto State::getBoard() const -> std::vector<State::ValueType> const&
+{
+  return board;
+}
+
 auto State::toString() const -> std::string
 {
   auto stream = std::ostringstream{};
@@ -110,6 +115,15 @@ auto State::toString() const -> std::string
   stream << "\n}";
 
   return stream.str();
+}
+
+auto State::indexToPos(std::size_t index) const -> State::Point
+{
+  auto point = State::Point{};
+  point.x = index % col;
+  point.y = index / col;
+
+  return point;
 }
 
 auto operator<<(std::ostream& os, State const& state) -> std::ostream&
