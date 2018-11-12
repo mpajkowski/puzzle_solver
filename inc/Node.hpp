@@ -6,26 +6,32 @@ template<typename T>
 class Node
 {
 public:
-  Node(std::shared_ptr<Node> parent, std::shared_ptr<State> state, T op, std::uint8_t recursionDepth = 0u);
+  Node(std::shared_ptr<Node> parent,
+       std::shared_ptr<State> state,
+       T historyCarrier,
+       std::uint8_t recursionDepth = 0u);
   Node(Node const&) = default;
 
   auto getParent() -> std::shared_ptr<Node>;
-  auto getState() -> std::shared_ptr<State>&;
-  auto getOp() -> T;
+  auto getState() -> std::shared_ptr<State>;
+  auto getHistoryCarrier() -> T;
   auto getRecursionDepth() -> std::uint8_t;
 
 private:
   std::shared_ptr<Node> parent;
   std::shared_ptr<State> state;
-  T op;
+  T historyCarrier;
   std::size_t recursionDepth;
 };
 
 template<typename T>
-Node<T>::Node(std::shared_ptr<Node> parent, std::shared_ptr<State> state, T op, std::uint8_t recursionDepth)
+Node<T>::Node(std::shared_ptr<Node> parent,
+              std::shared_ptr<State> state,
+              T historyCarrier,
+              std::uint8_t recursionDepth)
   : parent{ parent }
   , state{ state }
-  , op{ op }
+  , historyCarrier{ historyCarrier }
   , recursionDepth{ recursionDepth }
 {}
 
@@ -36,15 +42,15 @@ auto Node<T>::getParent() -> std::shared_ptr<Node>
 }
 
 template<typename T>
-auto Node<T>::getState() -> std::shared_ptr<State>&
+auto Node<T>::getState() -> std::shared_ptr<State>
 {
   return state;
 }
 
 template<typename T>
-auto Node<T>::getOp() -> T
+auto Node<T>::getHistoryCarrier() -> T
 {
-  return op;
+  return historyCarrier;
 }
 
 template<typename T>

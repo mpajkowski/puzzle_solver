@@ -35,8 +35,9 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   frontier.push(root);
 
   while (!frontier.empty()) {
-    auto& currNode = frontier.front();
+    auto currNode = frontier.front();
     auto currentState = currNode->getState();
+    frontier.pop();
 
     if (*currentState == goalState) {
       goal = std::make_shared<NodeT>(*currNode);
@@ -45,7 +46,6 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 
     auto currentStateHash = hasher(*currentState);
     if (explored.find(currentStateHash) != std::end(explored)) {
-      frontier.pop();
       continue;
     }
 
@@ -58,14 +58,13 @@ auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
       }
     }
 
-    frontier.pop();
     explored.insert(currentStateHash);
   }
 
   auto operatorStr = std::string{};
 
   for (auto it = goal; goal->getParent() != nullptr; goal = goal->getParent()) {
-    auto currentOp = goal->getOp().value();
+    auto currentOp = goal->getHistoryCarrier().value();
     operatorStr += static_cast<std::underlying_type<State::Operator>::type>(currentOp);
   }
 

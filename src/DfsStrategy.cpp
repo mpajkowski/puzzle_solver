@@ -5,7 +5,7 @@
 #include <stack>
 #include <unordered_set>
 
-constexpr auto MAX_RECURSION_DEPTH{ 20 };
+constexpr auto MAX_RECURSION_DEPTH{ 40 };
 
 using NodeT = Node<std::string>;
 
@@ -37,6 +37,7 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   while (!frontier.empty()) {
     auto currentNode = frontier.top();
     auto currentState = currentNode->getState();
+    frontier.pop();
 
     if (*currentState == goalState) {
       goal = std::make_shared<NodeT>(*currentNode);
@@ -45,9 +46,9 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
 
     auto currentStateHash = hasher(*currentState);
     if (explored.find(currentStateHash) != std::end(explored)) {
-      frontier.pop();
       continue;
     }
+
     explored.insert(currentStateHash);
 
     for (State::Operator op : order) {
@@ -58,7 +59,7 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
         auto currentRecursionDepth = currentNode->getRecursionDepth();
 
         if (currentRecursionDepth + 1 < MAX_RECURSION_DEPTH) {
-          auto path = currentNode->getOp();
+          auto path = currentNode->getHistoryCarrier();
 
           path += static_cast<std::underlying_type<State::Operator>::type>(moveExists.value());
           frontier.push(std::make_shared<NodeT>(nullptr, newState, path, currentRecursionDepth + 1));
@@ -67,9 +68,7 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     }
   }
 
-  auto operatorStr = goal->getOp();
-
-  return { operatorStr,
+  return { goal ? goal->getHistoryCarrier() : "notfound",
            explored.size(),
            0,
            0,
