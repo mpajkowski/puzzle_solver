@@ -31,7 +31,7 @@ auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   }
 
   auto compare = [&](NodeSP const& lhs, NodeSP const& rhs) {
-    return hamming(*(lhs->getState()), goalState) >= hamming(*(rhs->getState()), goalState);
+    return heuristicFn(*(lhs->getState()), goalState) >= heuristicFn(*(rhs->getState()), goalState);
   };
 
   auto frontier = std::priority_queue<NodeSP, std::deque<NodeSP>, decltype(compare)>{ compare };
