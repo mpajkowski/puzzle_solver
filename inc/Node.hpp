@@ -10,7 +10,12 @@ public:
        std::shared_ptr<State> state,
        T historyCarrier,
        std::uint8_t recursionDepth = 0u);
+
   Node(Node const&) = default;
+  Node(Node&&) = default;
+
+  Node& operator=(Node const&) = default;
+  Node& operator=(Node&&) = default;
 
   auto getParent() -> std::shared_ptr<Node>;
   auto getState() -> std::shared_ptr<State>;
