@@ -93,6 +93,11 @@ auto State::getRow() const -> State::ValueType
   return row;
 }
 
+auto State::getBoard() const -> std::vector<State::ValueType> const&
+{
+  return board;
+}
+
 auto State::toString() const -> std::string
 {
   auto stream = std::ostringstream{};

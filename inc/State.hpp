@@ -11,6 +11,7 @@ class State
 {
 public:
   using ValueType = std::uint_fast8_t;
+  using Board = std::vector<State::ValueType>;
 
   enum class Operator : State::ValueType
   {
@@ -35,6 +36,7 @@ public:
 
   auto getCol() const -> ValueType;
   auto getRow() const -> ValueType;
+  auto getBoard() const -> Board const&;
   auto toString() const -> std::string;
 
 private:

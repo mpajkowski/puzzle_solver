@@ -23,7 +23,7 @@ auto StateParser::parse() -> std::shared_ptr<State>
       rawLines.push(line);
     }
   } else {
-    throw std::logic_error{ "IO Exception" };
+    throw std::logic_error{ "File not found" };
   }
   firstStateFile.close();
 
