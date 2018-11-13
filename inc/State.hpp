@@ -21,12 +21,6 @@ public:
     Down = 'D'
   };
 
-  struct Point
-  {
-    State::ValueType x;
-    State::ValueType y;
-  };
-
   State(State::ValueType row, State::ValueType col, std::vector<State::ValueType> board);
 
   State(State const&) = default;
@@ -43,7 +37,6 @@ public:
   auto getCol() const -> ValueType;
   auto getRow() const -> ValueType;
   auto getBoard() const -> Board const&;
-  auto indexToPos(std::size_t index) const -> Point;
   auto toString() const -> std::string;
 
 private:

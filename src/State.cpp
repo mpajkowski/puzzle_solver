@@ -117,15 +117,6 @@ auto State::toString() const -> std::string
   return stream.str();
 }
 
-auto State::indexToPos(std::size_t index) const -> State::Point
-{
-  auto point = State::Point{};
-  point.x = index % col;
-  point.y = index / col;
-
-  return point;
-}
-
 auto operator<<(std::ostream& os, State const& state) -> std::ostream&
 {
   os << state.toString();
