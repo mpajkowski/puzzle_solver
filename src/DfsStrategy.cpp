@@ -59,7 +59,7 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
         auto currentRecursionDepth = currentNode->getRecursionDepth();
 
         if (currentRecursionDepth + 1 < MAX_RECURSION_DEPTH) {
-          auto path = currentNode->getHistoryCarrier();
+          auto path = currentNode->getPayload();
 
           path += static_cast<std::underlying_type<State::Operator>::type>(moveExists.value());
           frontier.push(std::make_shared<NodeT>(nullptr, newState, path, currentRecursionDepth + 1));
@@ -68,7 +68,7 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     }
   }
 
-  return { goal ? goal->getHistoryCarrier() : "notfound",
+  return { goal ? goal->getPayload() : "notfound",
            explored.size(),
            0,
            0,

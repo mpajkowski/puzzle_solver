@@ -66,7 +66,7 @@ auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
       auto moveExists = newState->move(dir);
 
       if (moveExists) {
-        auto path = currentNode->getHistoryCarrier();
+        auto path = currentNode->getPayload();
         path += static_cast<std::underlying_type<State::Operator>::type>(moveExists.value());
         frontier.push(std::make_shared<NodeT>(currentNode, newState, path));
       }
@@ -75,7 +75,7 @@ auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     explored.insert(currentStateHash);
   }
 
-  return { goal ? goal->getHistoryCarrier() : "notfound",
+  return { goal ? goal->getPayload() : "notfound",
            explored.size(),
            0,
            0,

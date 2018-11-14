@@ -8,7 +8,7 @@ class Node
 public:
   Node(std::shared_ptr<Node> parent,
        std::shared_ptr<State> state,
-       T historyCarrier,
+       T payload,
        std::uint8_t recursionDepth = 0u);
 
   Node(Node const&) = default;
@@ -19,24 +19,24 @@ public:
 
   auto getParent() -> std::shared_ptr<Node>;
   auto getState() -> std::shared_ptr<State>;
-  auto getHistoryCarrier() -> T;
+  auto getPayload() -> T;
   auto getRecursionDepth() -> std::uint8_t;
 
 private:
   std::shared_ptr<Node> parent;
   std::shared_ptr<State> state;
-  T historyCarrier;
+  T payload;
   std::size_t recursionDepth;
 };
 
 template<typename T>
 Node<T>::Node(std::shared_ptr<Node> parent,
               std::shared_ptr<State> state,
-              T historyCarrier,
+              T payload,
               std::uint8_t recursionDepth)
   : parent{ parent }
   , state{ state }
-  , historyCarrier{ historyCarrier }
+  , payload{ payload }
   , recursionDepth{ recursionDepth }
 {}
 
@@ -53,9 +53,9 @@ auto Node<T>::getState() -> std::shared_ptr<State>
 }
 
 template<typename T>
-auto Node<T>::getHistoryCarrier() -> T
+auto Node<T>::getPayload() -> T
 {
-  return historyCarrier;
+  return payload;
 }
 
 template<typename T>
