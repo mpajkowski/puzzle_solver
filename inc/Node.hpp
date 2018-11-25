@@ -6,10 +6,7 @@ template<typename T>
 class Node
 {
 public:
-  Node(std::shared_ptr<Node> parent,
-       std::shared_ptr<State> state,
-       T payload,
-       std::uint8_t recursionDepth = 0u);
+  Node(std::shared_ptr<State> state, T payload = T{});
 
   Node(Node const&) = default;
   Node(Node&&) = default;
@@ -17,34 +14,19 @@ public:
   Node& operator=(Node const&) = default;
   Node& operator=(Node&&) = default;
 
-  auto getParent() -> std::shared_ptr<Node>;
   auto getState() -> std::shared_ptr<State>;
   auto getPayload() -> T;
-  auto getRecursionDepth() -> std::uint8_t;
 
 private:
-  std::shared_ptr<Node> parent;
   std::shared_ptr<State> state;
   T payload;
-  std::size_t recursionDepth;
 };
 
 template<typename T>
-Node<T>::Node(std::shared_ptr<Node> parent,
-              std::shared_ptr<State> state,
-              T payload,
-              std::uint8_t recursionDepth)
-  : parent{ parent }
-  , state{ state }
+Node<T>::Node(std::shared_ptr<State> state, T payload)
+  : state{ state }
   , payload{ payload }
-  , recursionDepth{ recursionDepth }
 {}
-
-template<typename T>
-auto Node<T>::getParent() -> std::shared_ptr<Node>
-{
-  return parent;
-}
 
 template<typename T>
 auto Node<T>::getState() -> std::shared_ptr<State>
@@ -56,10 +38,4 @@ template<typename T>
 auto Node<T>::getPayload() -> T
 {
   return payload;
-}
-
-template<typename T>
-auto Node<T>::getRecursionDepth() -> std::uint8_t
-{
-  return recursionDepth;
 }

@@ -3,11 +3,22 @@
 #include "State.hpp"
 #include "StrategyContext.hpp"
 #include <stack>
-#include <unordered_set>
+#include <unordered_map>
 
-constexpr auto MAX_RECURSION_DEPTH{ 40 };
+constexpr std::uint8_t MAX_RECURSION_DEPTH{ 21 };
 
-using NodeT = Node<std::string>;
+struct DFSPayload
+{
+  DFSPayload(std::string path = std::string{}, std::uint8_t currentRecursionDepth = 0u)
+    : path{ path }
+    , currentRecursionDepth{ currentRecursionDepth }
+  {}
+
+  std::string path;
+  std::uint8_t currentRecursionDepth;
+};
+
+using NodeT = Node<DFSPayload>;
 
 DfsStrategy::DfsStrategy(std::vector<State::Operator> const& order)
   : order{ order }
@@ -28,9 +39,9 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   }
 
   auto frontier = std::stack<std::shared_ptr<NodeT>>{};
-  auto explored = std::unordered_set<std::size_t>{};
+  auto explored = std::unordered_map<std::size_t, std::uint8_t>{};
 
-  auto root = std::make_shared<NodeT>(nullptr, initialState, "", 0);
+  auto root = std::make_shared<NodeT>(initialState);
   auto goal = std::shared_ptr<NodeT>{ nullptr };
   frontier.push(root);
 
@@ -45,30 +56,35 @@ auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
     }
 
     auto currentStateHash = hasher(*currentState);
-    if (explored.find(currentStateHash) != std::end(explored)) {
-      continue;
+    auto currentRecursionDepth = currentNode->getPayload().currentRecursionDepth;
+
+    if (auto occurence = explored.find(currentStateHash); occurence != std::end(explored)) {
+      if (occurence->second <= currentRecursionDepth) {
+        continue;
+      } else {
+        occurence->second = currentRecursionDepth;
+      }
     }
 
-    explored.insert(currentStateHash);
+    explored[currentStateHash] = currentRecursionDepth;
 
     for (State::Operator op : order) {
       auto newState = std::make_shared<State>(*currentState);
       auto moveExists = newState->move(op);
 
       if (moveExists) {
-        auto currentRecursionDepth = currentNode->getRecursionDepth();
-
-        if (currentRecursionDepth + 1 < MAX_RECURSION_DEPTH) {
-          auto path = currentNode->getPayload();
+        if (currentRecursionDepth += 1; currentRecursionDepth < MAX_RECURSION_DEPTH) {
+          auto path = currentNode->getPayload().path;
 
           path += static_cast<std::underlying_type<State::Operator>::type>(moveExists.value());
-          frontier.push(std::make_shared<NodeT>(nullptr, newState, path, currentRecursionDepth + 1));
+          auto payload = DFSPayload{ path, currentRecursionDepth };
+          frontier.push(std::make_shared<NodeT>(newState, std::move(payload)));
         }
       }
     }
   }
 
-  return { goal ? goal->getPayload() : "notfound",
+  return { goal ? goal->getPayload().path : "notfound",
            explored.size(),
            0,
            0,

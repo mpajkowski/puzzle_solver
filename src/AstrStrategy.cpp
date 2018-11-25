@@ -37,7 +37,7 @@ auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   auto frontier = std::priority_queue<NodeSP, std::deque<NodeSP>, decltype(compare)>{ compare };
   auto explored = std::unordered_set<std::size_t>{};
 
-  auto root = std::make_shared<NodeT>(nullptr, initialState, "");
+  auto root = std::make_shared<NodeT>(initialState);
   auto goal = std::shared_ptr<NodeT>{ nullptr };
   frontier.push(root);
 
@@ -68,7 +68,7 @@ auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
       if (moveExists) {
         auto path = currentNode->getPayload();
         path += static_cast<std::underlying_type<State::Operator>::type>(moveExists.value());
-        frontier.push(std::make_shared<NodeT>(currentNode, newState, path));
+        frontier.push(std::make_shared<NodeT>(newState, path));
       }
     }
 
