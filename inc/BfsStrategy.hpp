@@ -5,11 +5,11 @@
 
 class StrategyContext;
 
-class BfsStrategy : public Strategy
+class BfsStrategy final : public Strategy
 {
 public:
-  BfsStrategy(std::vector<State::Operator> const& order);
-  auto findSolution(StrategyContext&& strategyContext) -> Solution override;
+  BfsStrategy(StrategyContext strategyContext, std::vector<State::Operator> const& order);
+  auto findSolution() -> Solution override;
 
 private:
   std::vector<State::Operator> order;

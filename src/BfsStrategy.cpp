@@ -23,11 +23,12 @@ struct BFSPayload
 
 using NodeT = Node<BFSPayload>;
 
-BfsStrategy::BfsStrategy(std::vector<State::Operator> const& order)
-  : order{ order }
+BfsStrategy::BfsStrategy(StrategyContext strategyContext, std::vector<State::Operator> const& order)
+  : Strategy(std::move(strategyContext))
+  , order{ order }
 {}
 
-auto BfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
+auto BfsStrategy::findSolution() -> Solution
 {
   auto t1 = Clock::now();
   auto hasher = std::hash<State>{};

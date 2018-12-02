@@ -2,23 +2,33 @@
 #include "Node.hpp"
 #include "State.hpp"
 #include "StrategyContext.hpp"
+#include <iostream>
+#include <numeric>
 #include <queue>
 #include <unordered_set>
 
 using NodeT = Node<std::string>;
 using NodeSP = std::shared_ptr<NodeT>;
 
-AstrStrategy::AstrStrategy(Constants::Heuristic heuristic)
-  : heuristicFn{ nullptr }
+AstrStrategy::AstrStrategy(StrategyContext strategyContext, Constants::Heuristic heuristic)
+  : Strategy(std::move(strategyContext))
+  , heuristicFn{ nullptr }
 {
+  using std::placeholders::_1;
+
   if (heuristic == Constants::Heuristic::HAMM) {
-    heuristicFn = &hamming;
+    heuristicFn = std::bind(&AstrStrategy::hamming, this, _1);
   } else {
-    heuristicFn = &manhattan;
+    heuristicFn = std::bind(&AstrStrategy::manhattan, this, _1);
+
+    auto& goalState = this->strategyContext.getGoalState();
+    for (std::size_t i = 0; i < goalState.getBoard().size(); ++i) {
+      goalCache[i] = goalState.getCoordinates(i);
+    }
   }
 }
 
-auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
+auto AstrStrategy::findSolution() -> Solution
 {
   auto t1 = Clock::now();
   auto hasher = std::hash<State>{};
@@ -31,7 +41,7 @@ auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
   }
 
   auto compare = [&](NodeSP const& lhs, NodeSP const& rhs) {
-    return heuristicFn(*(lhs->getState()), goalState) >= heuristicFn(*(rhs->getState()), goalState);
+    return heuristicFn(*(lhs->getState())) >= heuristicFn(*(rhs->getState()));
   };
 
   auto frontier = std::priority_queue<NodeSP, std::deque<NodeSP>, decltype(compare)>{ compare };
@@ -82,24 +92,34 @@ auto AstrStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
            std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
 }
 
-auto hamming(State const& currentState, State const& goal) -> State::ValueType
+auto AstrStrategy::hamming(State const& currentState) -> State::ValueType
 {
   auto result = State::ValueType{};
 
   for (std::size_t i = 0; i < currentState.getBoard().size(); ++i) {
-    if (currentState.getBoard()[i] == 0) {
-      continue;
-    }
-
-    if (currentState.getBoard()[i] != goal.getBoard()[i]) {
-      ++result;
+    if (currentState.getBoard()[i] != 0) {
+      if (currentState.getBoard()[i] != strategyContext.getGoalState().getBoard()[i]) {
+        ++result;
+      }
     }
   }
+
   return result;
 }
 
-auto manhattan(State const& currentState, State const& goal) -> State::ValueType
+auto AstrStrategy::manhattan(State const& currentState) -> State::ValueType
 {
-  // FIXME STUB!
-  return hamming(currentState, goal);
+  auto result = State::ValueType{};
+
+  for (std::size_t i = 0; i < currentState.getBoard().size(); ++i) {
+    if (currentState.getBoard()[i] != 0) {
+      if (currentState.getBoard()[i] != strategyContext.getGoalState().getBoard()[i]) {
+        auto currCoordinates = currentState.getCoordinates(i);
+        auto& goalCoordinates = goalCache.at(i);
+        result += abs(goalCoordinates.x - currCoordinates.x) + abs(goalCoordinates.y - currCoordinates.y);
+      }
+    }
+  }
+
+  return result;
 }
