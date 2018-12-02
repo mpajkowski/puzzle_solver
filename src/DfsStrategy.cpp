@@ -20,13 +20,14 @@ struct DFSPayload
 
 using NodeT = Node<DFSPayload>;
 
-DfsStrategy::DfsStrategy(std::vector<State::Operator> const& order)
-  : order{ order }
+DfsStrategy::DfsStrategy(StrategyContext strategyContext, std::vector<State::Operator> const& order)
+  : Strategy(std::move(strategyContext))
+  , order{ order }
 {
   std::reverse(std::begin(this->order), std::end(this->order));
 }
 
-auto DfsStrategy::findSolution(StrategyContext&& strategyContext) -> Solution
+auto DfsStrategy::findSolution() -> Solution
 {
   auto t1 = Clock::now();
   auto hasher = std::hash<State>{};

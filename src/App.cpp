@@ -18,11 +18,7 @@ App::App(Config cfg)
 
 auto App::run() -> void
 {
-  auto stateParser = StateParser{ config.firstStateFileName };
-  auto initialState = stateParser.parse();
-  auto strategyContext = StrategyContext{ initialState };
-
-  auto solution = strategy->findSolution(std::move(strategyContext));
+  auto solution = strategy->findSolution();
 
   // dispatch solution to ResultsManager
   resultsManager = std::make_unique<ResultsManager>(config, std::move(solution));
@@ -31,15 +27,22 @@ auto App::run() -> void
 
 auto App::init() -> void
 {
+  auto stateParser = StateParser{ config.firstStateFileName };
+  auto initialState = stateParser.parse();
+  auto strategyContext = StrategyContext{ initialState };
+
   switch (config.strategy) {
     case Constants::Strategy::BFS:
-      strategy = std::make_unique<BfsStrategy>(std::get<std::vector<State::Operator>>(config.strategyParam));
+      strategy = std::make_unique<BfsStrategy>(strategyContext,
+                                               std::get<std::vector<State::Operator>>(config.strategyParam));
       break;
     case Constants::Strategy::DFS:
-      strategy = std::make_unique<DfsStrategy>(std::get<std::vector<State::Operator>>(config.strategyParam));
+      strategy = std::make_unique<DfsStrategy>(strategyContext,
+                                               std::get<std::vector<State::Operator>>(config.strategyParam));
       break;
     case Constants::Strategy::ASTR:
-      strategy = std::make_unique<AstrStrategy>(std::get<Constants::Heuristic>(config.strategyParam));
+      strategy =
+        std::make_unique<AstrStrategy>(strategyContext, std::get<Constants::Heuristic>(config.strategyParam));
       break;
   }
 }

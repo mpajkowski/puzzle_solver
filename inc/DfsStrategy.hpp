@@ -2,14 +2,13 @@
 #include "Constants.hpp"
 #include "State.hpp"
 #include "Strategy.hpp"
+#include "StrategyContext.hpp"
 
-class StrategyContext;
-
-class DfsStrategy : public Strategy
+class DfsStrategy final : public Strategy
 {
 public:
-  DfsStrategy(std::vector<State::Operator> const& order);
-  auto findSolution(StrategyContext&& strategyContext) -> Solution override;
+  DfsStrategy(StrategyContext strategyContext, std::vector<State::Operator> const& order);
+  auto findSolution() -> Solution override;
 
 private:
   std::vector<State::Operator> order;

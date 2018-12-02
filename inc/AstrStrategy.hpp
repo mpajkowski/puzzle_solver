@@ -3,21 +3,23 @@
 #include "State.hpp"
 #include "Strategy.hpp"
 #include <functional>
+#include <map>
 
 class StrategyContext;
 
-using HeuristicFn = std::function<State::ValueType(State const&, State const&)>;
+using HeuristicFn = std::function<State::ValueType(State const&)>;
 
-auto hamming(State const&, State const&) -> State::ValueType;
-auto manhattan(State const&, State const&) -> State::ValueType;
-
-class AstrStrategy : public Strategy
+class AstrStrategy final : public Strategy
 {
 public:
-  AstrStrategy(Constants::Heuristic heuristic);
-  auto findSolution(StrategyContext&& strategyContext) -> Solution override;
+  AstrStrategy(StrategyContext strategyContext, Constants::Heuristic heuristic);
+  auto findSolution() -> Solution override;
 
 private:
   HeuristicFn heuristicFn;
+  std::map<std::size_t, State::Point> goalCache;
+
+  auto hamming(State const&) -> State::ValueType;
+  auto manhattan(State const&) -> State::ValueType;
 };
 
