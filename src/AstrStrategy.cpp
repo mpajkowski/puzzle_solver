@@ -7,8 +7,7 @@
 #include <queue>
 #include <unordered_set>
 
-using NodeT = Node<std::string>;
-using NodeSP = std::shared_ptr<NodeT>;
+using NodeSP = std::shared_ptr<Node>;
 
 AstrStrategy::AstrStrategy(StrategyContext strategyContext, Constants::Heuristic heuristic)
   : Strategy(std::move(strategyContext))
@@ -40,6 +39,9 @@ auto AstrStrategy::findSolution() -> Solution
     return { "", 0, 0, 0, std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
   }
 
+  std::uint8_t maxRecursionDepth{};
+  std::uint64_t processedCounter{};
+
   auto compare = [&](NodeSP const& lhs, NodeSP const& rhs) {
     return heuristicFn(*(lhs->getState())) >= heuristicFn(*(rhs->getState()));
   };
@@ -47,23 +49,26 @@ auto AstrStrategy::findSolution() -> Solution
   auto frontier = std::priority_queue<NodeSP, std::deque<NodeSP>, decltype(compare)>{ compare };
   auto explored = std::unordered_set<std::size_t>{};
 
-  auto root = std::make_shared<NodeT>(initialState);
-  auto goal = std::shared_ptr<NodeT>{ nullptr };
+  auto root = std::make_shared<Node>(initialState);
+  auto goal = std::shared_ptr<Node>{ nullptr };
   frontier.push(root);
 
   while (!frontier.empty()) {
     auto currentNode = frontier.top();
     auto currentState = currentNode->getState();
+
+    auto currentRecursionDepth = currentNode->getCurrentRecursionDepth();
+
+    if (currentRecursionDepth > maxRecursionDepth) {
+      maxRecursionDepth = currentRecursionDepth;
+    }
+
+    ++processedCounter;
     frontier.pop();
 
     if (*currentState == goalState) {
-      goal = std::make_shared<NodeT>(*currentNode);
+      goal = std::make_shared<Node>(*currentNode);
       break;
-    }
-
-    auto currentStateHash = hasher(*currentState);
-    if (explored.find(currentStateHash) != std::end(explored)) {
-      continue;
     }
 
     // order is not a concern here
@@ -76,19 +81,33 @@ auto AstrStrategy::findSolution() -> Solution
       auto moveExists = newState->move(dir);
 
       if (moveExists) {
-        auto path = currentNode->getPayload();
-        path += static_cast<std::underlying_type<State::Operator>::type>(moveExists.value());
-        frontier.push(std::make_shared<NodeT>(newState, path));
+        auto newNode = std::make_shared<Node>(newState, currentNode, dir, currentRecursionDepth + 1);
+        if (explored.find(hasher(*newState)) == std::end(explored)) {
+          frontier.emplace(std::move(newNode));
+        }
       }
-    }
 
-    explored.insert(currentStateHash);
+      explored.insert(hasher(*currentState));
+    }
   }
 
-  return { goal ? goal->getPayload() : "notfound",
+  auto operatorStr = std::string{};
+
+  if (goal) {
+    for (auto it = goal; it->getParent() != nullptr; it = it->getParent()) {
+      auto currentOp = it->getOp().value();
+      operatorStr += static_cast<char>(currentOp);
+    }
+  } else {
+    operatorStr = "notfound";
+  }
+
+  std::reverse(std::begin(operatorStr), std::end(operatorStr));
+
+  return { operatorStr,
            explored.size(),
-           0,
-           0,
+           processedCounter - explored.size(),
+           maxRecursionDepth,
            std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
 }
 
@@ -111,15 +130,17 @@ auto AstrStrategy::manhattan(State const& currentState) -> State::ValueType
 {
   auto result = State::ValueType{};
 
-  for (std::size_t i = 0; i < currentState.getBoard().size(); ++i) {
-    if (currentState.getBoard()[i] != 0) {
-      if (currentState.getBoard()[i] != strategyContext.getGoalState().getBoard()[i]) {
-        auto currCoordinates = currentState.getCoordinates(i);
-        auto& goalCoordinates = goalCache.at(i);
-        result += abs(goalCoordinates.x - currCoordinates.x) + abs(goalCoordinates.y - currCoordinates.y);
+  for (int x = 0; x < currentState.getRow(); x++)     // x-dimension, traversing rows (i)
+    for (int y = 0; y < currentState.getCol(); y++) { // y-dimension, traversing cols (j)
+      int value =
+        currentState.getBoard()[y + currentState.getCol() * x]; // tiles array contains board elements
+      if (value != 0) {                                         // we don't compute MD for element 0
+        int targetX = (value - 1) / currentState.getCol();      // expected x-coordinate (row)
+        int targetY = (value - 1) % currentState.getCol();      // expected y-coordinate (col)
+        int dx = x - targetX;                                   // x-distance to expected coordinate
+        int dy = y - targetY;                                   // y-distance to expected coordinate
+        result += abs(dx) + abs(dy);
       }
     }
-  }
-
   return result;
 }

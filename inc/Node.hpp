@@ -2,11 +2,13 @@
 #include "State.hpp"
 #include <memory>
 
-template<typename T>
 class Node
 {
 public:
-  Node(std::shared_ptr<State> state, T payload = T{});
+  Node(std::shared_ptr<State> state,
+       std::shared_ptr<Node> parent = nullptr,
+       std::optional<State::Operator> op = std::nullopt,
+       std::uint8_t currentRecursionDepth = 0);
 
   Node(Node const&) = default;
   Node(Node&&) = default;
@@ -14,28 +16,15 @@ public:
   Node& operator=(Node const&) = default;
   Node& operator=(Node&&) = default;
 
-  auto getState() -> std::shared_ptr<State>;
-  auto getPayload() -> T;
+  auto getState() const -> std::shared_ptr<State>;
+  auto getParent() const -> std::shared_ptr<Node>;
+  auto getCurrentRecursionDepth() const -> std::uint8_t;
+  auto getOp() const -> std::optional<State::Operator>;
 
 private:
   std::shared_ptr<State> state;
-  T payload;
+  std::shared_ptr<Node> parent;
+  std::optional<State::Operator> op;
+  std::uint8_t currentRecursionDepth;
 };
 
-template<typename T>
-Node<T>::Node(std::shared_ptr<State> state, T payload)
-  : state{ state }
-  , payload{ payload }
-{}
-
-template<typename T>
-auto Node<T>::getState() -> std::shared_ptr<State>
-{
-  return state;
-}
-
-template<typename T>
-auto Node<T>::getPayload() -> T
-{
-  return payload;
-}

@@ -9,6 +9,9 @@ public:
   auto saveData() -> void;
 
 private:
+  auto saveResult() -> void;
+  auto saveMeta() -> void;
+
   Config config;
   Solution solution;
 };

@@ -1,11 +1,12 @@
 #pragma once
 #include <chrono>
 #include <cstdint>
+#include <optional>
 #include <string>
 
 struct Solution
 {
-  std::string operators;
+  std::optional<std::string> operators;
   uint64_t visitedStatesCount;
   uint64_t processedStatesCount;
   uint64_t maxRecursionDepth;

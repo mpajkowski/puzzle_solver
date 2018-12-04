@@ -6,22 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <queue>
-#include <unordered_map>
 #include <unordered_set>
-
-struct BFSPayload
-{
-  BFSPayload(std::shared_ptr<Node<BFSPayload>> parent = nullptr,
-             std::optional<State::Operator> op = std::nullopt)
-    : parent{ parent }
-    , op{ op }
-  {}
-
-  std::shared_ptr<Node<BFSPayload>> parent;
-  std::optional<State::Operator> op;
-};
-
-using NodeT = Node<BFSPayload>;
 
 BfsStrategy::BfsStrategy(StrategyContext strategyContext, std::vector<State::Operator> const& order)
   : Strategy(std::move(strategyContext))
@@ -40,20 +25,31 @@ auto BfsStrategy::findSolution() -> Solution
     return { "", 0, 0, 0, std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
   }
 
-  auto frontier = std::queue<std::shared_ptr<NodeT>>{};
+  std::uint8_t maxRecursionDepth{};
+  std::uint64_t processedCounter{};
+
+  auto frontier = std::queue<std::shared_ptr<Node>>{};
   auto explored = std::unordered_set<std::size_t>{};
 
-  auto root = std::make_shared<NodeT>(initialState);
-  auto goal = std::shared_ptr<NodeT>{ nullptr };
+  auto root = std::make_shared<Node>(initialState);
+  auto goal = std::shared_ptr<Node>{ nullptr };
   frontier.push(root);
 
   while (!frontier.empty()) {
     auto currNode = frontier.front();
     auto currentState = currNode->getState();
+    auto currRecursionDepth = currNode->getCurrentRecursionDepth();
+
+    if (currRecursionDepth > maxRecursionDepth) {
+      maxRecursionDepth = currRecursionDepth;
+    }
+
+    ++processedCounter;
+
     frontier.pop();
 
     if (*currentState == goalState) {
-      goal = std::make_shared<NodeT>(*currNode);
+      goal = std::make_shared<Node>(*currNode);
       break;
     }
 
@@ -67,26 +63,28 @@ auto BfsStrategy::findSolution() -> Solution
       auto moveExists = newState->move(op);
 
       if (moveExists) {
-        auto payload = BFSPayload{ currNode, op };
-        frontier.push(std::make_shared<NodeT>(newState, payload));
+        frontier.push(std::make_shared<Node>(newState, currNode, op, currRecursionDepth + 1));
       }
     }
-
     explored.insert(currentStateHash);
   }
 
   auto operatorStr = std::string{};
 
-  for (auto it = goal; it->getPayload().parent != nullptr; it = it->getPayload().parent) {
-    auto currentOp = it->getPayload().op.value();
-    operatorStr += static_cast<std::underlying_type<State::Operator>::type>(currentOp);
+  if (goal) {
+    for (auto it = goal; it->getParent() != nullptr; it = it->getParent()) {
+      auto currentOp = it->getOp().value();
+      operatorStr += static_cast<char>(currentOp);
+    }
+  } else {
+    operatorStr = "notfound";
   }
 
   std::reverse(std::begin(operatorStr), std::end(operatorStr));
 
   return { operatorStr,
            explored.size(),
-           0,
-           0,
+           processedCounter - explored.size(),
+           maxRecursionDepth,
            std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
 }
