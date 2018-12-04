@@ -3,7 +3,7 @@
 #include "State.hpp"
 #include "StrategyContext.hpp"
 #include <stack>
-#include <unordered_set>
+#include <unordered_map>
 
 constexpr std::uint8_t MAX_RECURSION_DEPTH{ 20 };
 
@@ -30,7 +30,7 @@ auto DfsStrategy::findSolution() -> Solution
   std::uint64_t processedCounter{};
 
   auto frontier = std::list<std::shared_ptr<Node>>{};
-  auto explored = std::unordered_set<std::size_t>{};
+  auto explored = std::unordered_map<std::size_t, std::uint8_t>{};
 
   auto root = std::make_shared<Node>(initialState);
   auto goal = std::shared_ptr<Node>{ nullptr };
@@ -58,6 +58,17 @@ auto DfsStrategy::findSolution() -> Solution
       break;
     }
 
+    auto currentStateHash = hasher(*currentState);
+
+    if (auto occurence = explored.find(currentStateHash); occurence != std::end(explored)) {
+      if (occurence->second < currentRecursionDepth) {
+        continue;
+      } else {
+        occurence->second = currentRecursionDepth;
+      }
+    }
+    explored[currentStateHash] = currentRecursionDepth;
+
     for (State::Operator op : order) {
       auto newState = std::make_shared<State>(*currentState);
       auto moveExists = newState->move(op);
@@ -65,13 +76,36 @@ auto DfsStrategy::findSolution() -> Solution
       if (moveExists) {
         auto newNode = std::make_shared<Node>(newState, currentNode, op, currentRecursionDepth + 1);
 
-        if (std::find(std::begin(frontier), std::end(frontier), newNode) == std::end(frontier) &&
-            explored.find(hasher(*newState)) == std::end(explored)) {
-          frontier.emplace_back(std::move(newNode));
+        auto exploredOccurence = explored.find(hasher(*newState));
+
+        if (exploredOccurence != std::end(explored)) {
+          auto newNodeCurrRecursionDepth = newNode->getCurrentRecursionDepth();
+          if (exploredOccurence->second < newNodeCurrRecursionDepth) {
+            // nothing to do here; just found an occurence thus need to step out
+            continue;
+          } else {
+            exploredOccurence->second = newNodeCurrRecursionDepth;
+          }
         }
+
+        auto frontierOccurence =
+          std::find_if(std::begin(frontier), std::end(frontier), [&](auto const& elem) {
+            return elem->getState() == newNode->getState();
+          });
+
+        if (frontierOccurence != std::end(frontier)) {
+          auto newNodeCurrRecursionDepth = newNode->getCurrentRecursionDepth();
+          if ((*frontierOccurence)->getCurrentRecursionDepth() < newNodeCurrRecursionDepth) {
+            // nothing to do here; just found an occurence thus need to step out
+            continue;
+          } else {
+            frontier.erase(frontierOccurence);
+          }
+        }
+
+        frontier.emplace_back(std::move(newNode));
       }
     }
-    explored.insert(hasher(*currentState));
   }
 
   auto operatorStr = std::string{};
@@ -88,8 +122,8 @@ auto DfsStrategy::findSolution() -> Solution
   std::reverse(std::begin(operatorStr), std::end(operatorStr));
 
   return { operatorStr,
+           frontier.size() + explored.size(),
            explored.size(),
-           processedCounter - explored.size(),
            maxRecursionDepth,
            std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
 }

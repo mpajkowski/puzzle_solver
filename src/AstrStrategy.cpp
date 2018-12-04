@@ -4,7 +4,7 @@
 #include "StrategyContext.hpp"
 #include <iostream>
 #include <numeric>
-#include <queue>
+#include <set>
 #include <unordered_set>
 
 using NodeSP = std::shared_ptr<Node>;
@@ -43,18 +43,18 @@ auto AstrStrategy::findSolution() -> Solution
   std::uint64_t processedCounter{};
 
   auto compare = [&](NodeSP const& lhs, NodeSP const& rhs) {
-    return heuristicFn(*(lhs->getState())) >= heuristicFn(*(rhs->getState()));
+    return heuristicFn(*(lhs->getState())) < heuristicFn(*(rhs->getState()));
   };
 
-  auto frontier = std::priority_queue<NodeSP, std::deque<NodeSP>, decltype(compare)>{ compare };
+  auto frontier = std::multiset<NodeSP, decltype(compare)>{ compare };
   auto explored = std::unordered_set<std::size_t>{};
 
   auto root = std::make_shared<Node>(initialState);
   auto goal = std::shared_ptr<Node>{ nullptr };
-  frontier.push(root);
+  frontier.insert(root);
 
   while (!frontier.empty()) {
-    auto currentNode = frontier.top();
+    auto currentNode = *std::begin(frontier);
     auto currentState = currentNode->getState();
 
     auto currentRecursionDepth = currentNode->getCurrentRecursionDepth();
@@ -64,7 +64,7 @@ auto AstrStrategy::findSolution() -> Solution
     }
 
     ++processedCounter;
-    frontier.pop();
+    frontier.erase(std::begin(frontier));
 
     if (*currentState == goalState) {
       goal = std::make_shared<Node>(*currentNode);
@@ -82,7 +82,13 @@ auto AstrStrategy::findSolution() -> Solution
 
       if (moveExists) {
         auto newNode = std::make_shared<Node>(newState, currentNode, dir, currentRecursionDepth + 1);
-        if (explored.find(hasher(*newState)) == std::end(explored)) {
+
+        bool foundInExplored = explored.find(hasher(*newState)) != std::end(explored);
+        bool foundInFrontier = std::find_if(std::begin(frontier), std::end(frontier), [&](auto const& elem) {
+                                 return elem->getState() == newNode->getState();
+                               }) != std::end(frontier);
+
+        if (!foundInExplored && !foundInFrontier) {
           frontier.emplace(std::move(newNode));
         }
       }
@@ -130,15 +136,14 @@ auto AstrStrategy::manhattan(State const& currentState) -> State::ValueType
 {
   auto result = State::ValueType{};
 
-  for (int x = 0; x < currentState.getRow(); x++)     // x-dimension, traversing rows (i)
-    for (int y = 0; y < currentState.getCol(); y++) { // y-dimension, traversing cols (j)
-      int value =
-        currentState.getBoard()[y + currentState.getCol() * x]; // tiles array contains board elements
-      if (value != 0) {                                         // we don't compute MD for element 0
-        int targetX = (value - 1) / currentState.getCol();      // expected x-coordinate (row)
-        int targetY = (value - 1) % currentState.getCol();      // expected y-coordinate (col)
-        int dx = x - targetX;                                   // x-distance to expected coordinate
-        int dy = y - targetY;                                   // y-distance to expected coordinate
+  for (int x = 0; x < currentState.getRow(); x++)
+    for (int y = 0; y < currentState.getCol(); y++) {
+      int value = currentState.getBoard()[y + currentState.getCol() * x];
+      if (value != 0) {
+        int targetX = (value - 1) / currentState.getCol();
+        int targetY = (value - 1) % currentState.getCol();
+        int dx = x - targetX;
+        int dy = y - targetY;
         result += abs(dx) + abs(dy);
       }
     }
