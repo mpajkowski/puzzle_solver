@@ -10,7 +10,7 @@ struct Solution
   uint64_t visitedStatesCount;
   uint64_t processedStatesCount;
   uint64_t maxRecursionDepth;
-  std::chrono::milliseconds duration;
+  std::chrono::duration<double, std::milli> duration;
 
   Solution() = default;
 

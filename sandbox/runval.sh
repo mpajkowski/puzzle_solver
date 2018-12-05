@@ -16,7 +16,7 @@
 # for example:
 #  4x4_01_00001_bfs_rdul_sol.txt
 
-progcmd='./puzzle_solver'
+progcmd='java -jar /home/marcin/Downloads/puzzleval.jar'
 sol_filename_regex='^([a-zA-Z0-9]+_[0-9]+_[0-9]+)_[a-zA-Z]+_[a-zA-Z]+_sol.txt$'
 
 n_correct_sols=0

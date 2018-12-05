@@ -19,11 +19,6 @@ AstrStrategy::AstrStrategy(StrategyContext strategyContext, Constants::Heuristic
     heuristicFn = std::bind(&AstrStrategy::hamming, this, _1);
   } else {
     heuristicFn = std::bind(&AstrStrategy::manhattan, this, _1);
-
-    auto& goalState = this->strategyContext.getGoalState();
-    for (std::size_t i = 0; i < goalState.getBoard().size(); ++i) {
-      goalCache[i] = goalState.getCoordinates(i);
-    }
   }
 }
 
@@ -97,22 +92,11 @@ auto AstrStrategy::findSolution() -> Solution
     }
   }
 
-  auto operatorStr = std::string{};
-
-  if (goal) {
-    for (auto it = goal; it->getParent() != nullptr; it = it->getParent()) {
-      auto currentOp = it->getOp().value();
-      operatorStr += static_cast<char>(currentOp);
-    }
-  } else {
-    operatorStr = "notfound";
-  }
-
-  std::reverse(std::begin(operatorStr), std::end(operatorStr));
+  auto operatorStr = goal ? std::optional(constructPath(goal)) : std::nullopt;
 
   return { operatorStr,
+           explored.size() + frontier.size(),
            explored.size(),
-           processedCounter - explored.size(),
            maxRecursionDepth,
            std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
 }
@@ -136,7 +120,7 @@ auto AstrStrategy::manhattan(State const& currentState) -> State::ValueType
 {
   auto result = State::ValueType{};
 
-  for (int x = 0; x < currentState.getRow(); x++)
+  for (int x = 0; x < currentState.getRow(); x++) {
     for (int y = 0; y < currentState.getCol(); y++) {
       int value = currentState.getBoard()[y + currentState.getCol() * x];
       if (value != 0) {
@@ -147,5 +131,7 @@ auto AstrStrategy::manhattan(State const& currentState) -> State::ValueType
         result += abs(dx) + abs(dy);
       }
     }
+  }
+
   return result;
 }

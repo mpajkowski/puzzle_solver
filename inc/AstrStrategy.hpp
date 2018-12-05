@@ -3,7 +3,6 @@
 #include "State.hpp"
 #include "Strategy.hpp"
 #include <functional>
-#include <map>
 
 class StrategyContext;
 
@@ -17,7 +16,6 @@ public:
 
 private:
   HeuristicFn heuristicFn;
-  std::map<std::size_t, State::Point> goalCache;
 
   auto hamming(State const&) -> State::ValueType;
   auto manhattan(State const&) -> State::ValueType;

@@ -1,5 +1,6 @@
 #include "StrategyContext.hpp"
 #include "State.hpp"
+#include <iostream>
 #include <numeric>
 
 StrategyContext::StrategyContext(std::shared_ptr<State> initialState)

@@ -108,18 +108,7 @@ auto DfsStrategy::findSolution() -> Solution
     }
   }
 
-  auto operatorStr = std::string{};
-
-  if (goal) {
-    for (auto it = goal; it->getParent() != nullptr; it = it->getParent()) {
-      auto currentOp = it->getOp().value();
-      operatorStr += static_cast<char>(currentOp);
-    }
-  } else {
-    operatorStr = "notfound";
-  }
-
-  std::reverse(std::begin(operatorStr), std::end(operatorStr));
+  auto operatorStr = goal ? std::optional(constructPath(goal)) : std::nullopt;
 
   return { operatorStr,
            frontier.size() + explored.size(),

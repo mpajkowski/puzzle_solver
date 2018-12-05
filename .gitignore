@@ -4,3 +4,4 @@ compile_commands.json
 sandbox/*
 !sandbox/*_[0-9][0-9][0-9][0-9][0-9].txt
 !sandbox/*.sh
+.ipynb_checkpoints/*

@@ -98,14 +98,6 @@ auto State::getBoard() const -> std::vector<State::ValueType> const&
   return board;
 }
 
-auto State::getCoordinates(std::size_t i) const -> Point
-{
-  auto x = i % col;
-  auto y = i / col;
-
-  return { static_cast<int>(x), static_cast<int>(y) };
-}
-
 auto State::toString() const -> std::string
 {
   auto stream = std::ostringstream{};

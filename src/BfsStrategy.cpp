@@ -3,7 +3,6 @@
 #include "State.hpp"
 #include "StrategyContext.hpp"
 #include <algorithm>
-#include <iostream>
 #include <memory>
 #include <queue>
 #include <unordered_set>
@@ -69,22 +68,9 @@ auto BfsStrategy::findSolution() -> Solution
     explored.insert(currentStateHash);
   }
 
-  auto operatorStr = std::string{};
+  auto operatorStr = goal ? std::optional(constructPath(goal)) : std::nullopt;
 
-  if (goal) {
-    for (auto it = goal; it->getParent() != nullptr; it = it->getParent()) {
-      auto currentOp = it->getOp().value();
-      operatorStr += static_cast<char>(currentOp);
-    }
-  } else {
-    operatorStr = "notfound";
-  }
-
-  std::reverse(std::begin(operatorStr), std::end(operatorStr));
-
-  return { operatorStr,
-           explored.size(),
-           processedCounter - explored.size(),
-           maxRecursionDepth,
-           std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
+  return {
+    operatorStr, explored.size(), processedCounter - explored.size(), maxRecursionDepth, (Clock::now() - t1)
+  };
 }
