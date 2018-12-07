@@ -21,7 +21,7 @@ auto BfsStrategy::findSolution() -> Solution
   auto const& goalState = strategyContext.getGoalState();
 
   if (*initialState == goalState) {
-    return { "", 0, 0, 0, std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
+    return { "", 0, 0, 0, (Clock::now() - t1) };
   }
 
   std::uint8_t maxRecursionDepth{};

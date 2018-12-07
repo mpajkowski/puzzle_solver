@@ -39,7 +39,7 @@ auto ResultsManager::saveMeta() -> void
   file << solution.visitedStatesCount << '\n';
   file << solution.processedStatesCount << '\n';
   file << solution.maxRecursionDepth << '\n';
-  file << std::setprecision(3) << std::fixed << solution.duration.count();
+  file << std::fixed << std::setprecision(3) << solution.duration.count();
   file << std::endl;
 
   file.close();
