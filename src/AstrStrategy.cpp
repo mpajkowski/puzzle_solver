@@ -94,11 +94,9 @@ auto AstrStrategy::findSolution() -> Solution
 
   auto operatorStr = goal ? std::optional(constructPath(goal)) : std::nullopt;
 
-  return { operatorStr,
-           explored.size() + frontier.size(),
-           explored.size(),
-           maxRecursionDepth,
-           std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
+  return {
+    operatorStr, explored.size() + frontier.size(), explored.size(), maxRecursionDepth, (Clock::now() - t1)
+  };
 }
 
 auto AstrStrategy::hamming(State const& currentState) -> State::ValueType

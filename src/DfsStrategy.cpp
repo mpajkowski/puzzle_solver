@@ -23,7 +23,7 @@ auto DfsStrategy::findSolution() -> Solution
   auto const& goalState = strategyContext.getGoalState();
 
   if (*initialState == goalState) {
-    return { "", 0, 0, 0, std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
+    return { "", 0, 0, 0, (Clock::now() - t1) };
   }
 
   std::uint8_t maxRecursionDepth{};
@@ -110,9 +110,7 @@ auto DfsStrategy::findSolution() -> Solution
 
   auto operatorStr = goal ? std::optional(constructPath(goal)) : std::nullopt;
 
-  return { operatorStr,
-           frontier.size() + explored.size(),
-           explored.size(),
-           maxRecursionDepth,
-           std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
+  return {
+    operatorStr, frontier.size() + explored.size(), explored.size(), maxRecursionDepth, (Clock::now() - t1)
+  };
 }
