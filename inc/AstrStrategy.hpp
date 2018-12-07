@@ -17,7 +17,7 @@ public:
 private:
   HeuristicFn heuristicFn;
 
-  auto hamming(State const&) -> State::ValueType;
-  auto manhattan(State const&) -> State::ValueType;
+  auto hamming(State const&) -> int;
+  auto manhattan(State const&) -> int;
 };
 
