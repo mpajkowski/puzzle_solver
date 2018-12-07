@@ -31,13 +31,13 @@ auto AstrStrategy::findSolution() -> Solution
   auto const& goalState = strategyContext.getGoalState();
 
   if (*initialState == goalState) {
-    return { "", 0, 0, 0, std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - t1) };
+    return { "", 0, 0, 0, (Clock::now() - t1) };
   }
 
   std::uint8_t maxRecursionDepth{};
   std::uint64_t processedCounter{};
 
-  auto compare = [&](NodeSP const& lhs, NodeSP const& rhs) {
+  auto compare = [this](NodeSP const& lhs, NodeSP const& rhs) {
     return heuristicFn(*(lhs->getState())) < heuristicFn(*(rhs->getState()));
   };
 
@@ -58,8 +58,8 @@ auto AstrStrategy::findSolution() -> Solution
       maxRecursionDepth = currentRecursionDepth;
     }
 
-    ++processedCounter;
     frontier.erase(std::begin(frontier));
+    ++processedCounter;
 
     if (*currentState == goalState) {
       goal = std::make_shared<Node>(*currentNode);
@@ -68,28 +68,27 @@ auto AstrStrategy::findSolution() -> Solution
 
     // order is not a concern here
     auto moves = {
-      State::Operator::Left, State::Operator::Right, State::Operator::Up, State::Operator::Down
+      State::Operator::Up, State::Operator::Right, State::Operator::Down, State::Operator::Left
     };
 
     for (auto dir : moves) {
       auto newState = std::make_shared<State>(*currentState);
-      auto moveExists = newState->move(dir);
 
-      if (moveExists) {
+      if (newState->move(dir)) {
         auto newNode = std::make_shared<Node>(newState, currentNode, dir, currentRecursionDepth + 1);
 
         bool foundInExplored = explored.find(hasher(*newState)) != std::end(explored);
         bool foundInFrontier = std::find_if(std::begin(frontier), std::end(frontier), [&](auto const& elem) {
-                                 return elem->getState() == newNode->getState();
+                                 return *(elem->getState()) == *(newNode->getState());
                                }) != std::end(frontier);
 
         if (!foundInExplored && !foundInFrontier) {
           frontier.emplace(std::move(newNode));
         }
       }
-
-      explored.insert(hasher(*currentState));
     }
+
+    explored.insert(hasher(*currentState));
   }
 
   auto operatorStr = goal ? std::optional(constructPath(goal)) : std::nullopt;
@@ -99,24 +98,26 @@ auto AstrStrategy::findSolution() -> Solution
   };
 }
 
-auto AstrStrategy::hamming(State const& currentState) -> State::ValueType
+auto AstrStrategy::hamming(State const& currentState) -> int
 {
-  auto result = State::ValueType{};
+  auto& currentBoard = currentState.getBoard();
 
-  for (std::size_t i = 0; i < currentState.getBoard().size(); ++i) {
-    if (currentState.getBoard()[i] != 0) {
-      if (currentState.getBoard()[i] != strategyContext.getGoalState().getBoard()[i]) {
-        ++result;
-      }
+  int result{ currentBoard.back() != 0 ? 1 : 0 };
+
+  for (size_t i = 0; i < currentBoard.size() - 1; ++i) {
+    auto currVal = currentBoard[i];
+
+    if (currVal != 0 && currVal != currVal + 1) {
+      ++result;
     }
   }
 
   return result;
 }
 
-auto AstrStrategy::manhattan(State const& currentState) -> State::ValueType
+auto AstrStrategy::manhattan(State const& currentState) -> int
 {
-  auto result = State::ValueType{};
+  int result{};
 
   for (int x = 0; x < currentState.getRow(); x++) {
     for (int y = 0; y < currentState.getCol(); y++) {
