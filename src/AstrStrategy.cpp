@@ -38,10 +38,12 @@ auto AstrStrategy::findSolution() -> Solution
   std::uint64_t processedCounter{};
 
   auto compare = [this](NodeSP const& lhs, NodeSP const& rhs) {
-    return heuristicFn(*(lhs->getState())) < heuristicFn(*(rhs->getState()));
+    return lhs->getCurrentRecursionDepth() + heuristicFn(*(lhs->getState())) <
+           rhs->getCurrentRecursionDepth() + heuristicFn(*(rhs->getState()));
   };
 
   auto frontier = std::multiset<NodeSP, decltype(compare)>{ compare };
+
   auto explored = std::unordered_set<std::size_t>{};
 
   auto root = std::make_shared<Node>(initialState);
@@ -68,7 +70,7 @@ auto AstrStrategy::findSolution() -> Solution
 
     // order is not a concern here
     auto moves = {
-      State::Operator::Up, State::Operator::Right, State::Operator::Down, State::Operator::Left
+      State::Operator::Up, State::Operator::Down, State::Operator::Left, State::Operator::Right
     };
 
     for (auto dir : moves) {
@@ -101,15 +103,13 @@ auto AstrStrategy::findSolution() -> Solution
 auto AstrStrategy::hamming(State const& currentState) -> int
 {
   auto& currentBoard = currentState.getBoard();
+  auto& goalBoard = strategyContext.getGoalState().getBoard();
 
-  int result{ currentBoard.back() != 0 ? 1 : 0 };
+  int result{};
 
-  for (size_t i = 0; i < currentBoard.size() - 1; ++i) {
-    auto currVal = currentBoard[i];
-
-    if (currVal != 0 && currVal != currVal + 1) {
-      ++result;
-    }
+  for (size_t i = 0; i < currentBoard.size(); ++i) {
+    // branch prediction optimalization
+    result += static_cast<int>((currentBoard[i] != goalBoard[i]) && currentBoard[i] != 0);
   }
 
   return result;
@@ -119,15 +119,13 @@ auto AstrStrategy::manhattan(State const& currentState) -> int
 {
   int result{};
 
-  for (int x = 0; x < currentState.getRow(); x++) {
-    for (int y = 0; y < currentState.getCol(); y++) {
-      int value = currentState.getBoard()[y + currentState.getCol() * x];
+  for (int i = 0; i < currentState.getRow(); ++i) {
+    for (int j = 0; j < currentState.getCol(); ++j) {
+      int value = currentState.getBoard()[currentState.getRow() * i + j];
       if (value != 0) {
-        int targetX = (value - 1) / currentState.getCol();
-        int targetY = (value - 1) % currentState.getCol();
-        int dx = x - targetX;
-        int dy = y - targetY;
-        result += abs(dx) + abs(dy);
+        int goalI = (value - 1) / currentState.getRow();
+        int goalJ = (value - 1) % currentState.getCol();
+        result += abs(i - goalI) + abs(j - goalJ);
       }
     }
   }

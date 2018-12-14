@@ -6,7 +6,7 @@
 
 class StrategyContext;
 
-using HeuristicFn = std::function<State::ValueType(State const&)>;
+using HeuristicFn = std::function<int(State const&)>;
 
 class AstrStrategy final : public Strategy
 {
