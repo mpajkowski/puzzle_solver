@@ -29,8 +29,8 @@
 \begin{document}
 
 \begin{titlepage}
-\maketitle
-\thispagestyle{empty}
+  \maketitle
+  \thispagestyle{empty}
 \end{titlepage}
 
 \section{Cel}
@@ -53,16 +53,15 @@ odpowiednim szeregu.
 \subsection{Złożoność problemu i rozwiązywalność}
 
 Ilość stanów każdej układanki można wyznaczyć za pomocą wzoru:
-\[ iloscStanów = iloscPól! \] Dla układanki 4x4 będzie to liczba
-\[ 16! = 2.0922789888 * 10^{13} \] Jednakże nie wszystkie układy są
+$ iloscStanow = iloscPol! $. Dla układanki 4x4 będzie to liczba
+$ 16! = 2.0922789888 * 10^{13} $. Jednakże nie wszystkie układy są
 rozwiązywalne. Możemy je podzielić na parzyste i nieparzyste - co
 oznacza, że do uzyskania stanu wzorcowego należy wykonać parzystą lub
-nieparzystą liczbę ruchów. Wszystkie układy pochodzące poprzez
-przesuwanie klocków w obrębie wolnego pola, począwszy od układu
+nieparzystą liczbę ruchów. Układy powstające wskutek legalnego
+przesuwania klocków w obrębie wolnego pola, począwszy od układu
 docelowego, są układami parzystymi.
 
-\subsection{Grafowa reprezentacja przestrzeni
-stanów}
+\subsection{Grafowa reprezentacja przestrzeni stanów}
 
 Grafem nazywamy obiekt matematyczny składający się z niepustego zbioru
 wierzchołków W i zbioru krawędzi K łączącego niektóre z tych
@@ -74,53 +73,53 @@ znajdującym się względem niego nad nim, pod nim, z jego lewej lub prawej
 strony).
 
 \subsection{Metody przeszukiwania przestrzeni stanów}
-
-Do przeszukiwania grafu przestrzeni stanów w celu znalezienia
-rozwiązania układanki zostaną zaprezentowane następujące podejścia:
-
+\subsubsection{Podział algorytmów}
 \begin{itemize}
-\item
-  Metody ślepe (klasyczne):
-
-  \begin{itemize}
-  \item
-    breadth-first search (BFS)
-  \item
-    depth-first search (DFS)
-  \end{itemize}
-\item
-  Metody oparte o heurystyki:
-
-  \begin{itemize}
-  \item
-    algorytm A*
-  \end{itemize}
+  \item Metody ślepe (klasyczne):
+    \begin{itemize}
+      \item breadth-first search (BFS)
+      \item depth-first search (DFS)
+    \end{itemize}
+  \item Metody oparte o heurystyki:
+    \begin{itemize}
+      \item algorytm A*
+    \end{itemize}
 \end{itemize}
 
 Algorytmy klasyczne jako dodatkowy parametr przyjmują \textbf{porządek
 przeszukiwania}, zaś algorytm A* do przyspieszenia procesu
 przeszukiwania wykorzystuje \textbf{metryki} - zostaną zaprezentowane
-metryka Hamminga oraz Manhattan (inaczej metryka taxicab lub metryka
-miejska).
+metryka Hamminga oraz Manhattan (innymi nazwami tej metryki spotykane
+w literaturze metryka taksówkowa lub metryka miejska).
 
-Algorytm \textbf{BFS} przeszukuje graf \textbf{wszerz} - w pierwszej
-kolejności odwiedzany jest stan początkowy, następnie sąsiedzi stanu
-początkowego, dalej sąsiedzi sąsiadów rozwiniętych w poprzednich
+\subsubsection{Breadth-First Search}
+
+Algorytm BFS przeszukuje graf \textbf{wszerz} - na początku
+odwiedzany jest stan początkowy, następnie jego sąsiedzi
+a w dalszej kolejności sąsiedzi sąsiadów rozwiniętych w poprzednich
 iteracjach - do momentu znalezienia stanu wzorcowego.
 
-Inny algorytm z tej grupy - \textbf{DFS} przeszukuje graf \textbf{w
-głąb} - w pierwszej kolejności odwiedzany jest stan początkowy,
-następnie sąsiedzi stanu początkowego (zgodnie z podanym wcześniej
-porządkiem przeszukiwania). Następnie odwiedzany jest stan-dziecko
-będący blabla (TODO)
+\subsubsection{Depth-First Search}
+Inaczej działa algorytm DFS: w literaturze można spotkać się ze
+stwierdzeniem, że przeszukuje on graf \emph{w głąb}. Można łatwo to
+uzasadnić - DFS po rozwinięciu stanu wyjściowego nie próbuje rozwijać stanów
+na tej samej wysokości jak ma to miejsce W DFS. Zamiast tego odwiedza
+stany-dzieci i rozwija je do momentu napotkanej przeszkody. Taką przeszkodą może
+być koniec ścieżki w głąb (w wypadku układanki - brak możliwości przesunięcia
+klocka w danym kierunku) lub arbitralnie ustalony limit osiąganej głębokości.
 
-Zasadniczą różnicą między tymi dwoma podejściami jest to, że klasyczne
-algorytmy poszukują rozwiązanie zgodnie z określonym porządkiem i nie
-próbują aproksymować zasadności następnego ruchu. W praktyce nie musi to
-oznaczać, że algorytmy klasyczne są nieoptymalne - przykładowo algorytm
-BFS znajduje zawsze rozwiazanie optymalne.
+\subsubsection{A*}
+Algorytm \emph{A*} przyjmuje inną strategię działania niż metody
+omówione wyżej - nie opiera się na ściśle określonym porządku. Suplementem tego
+algorytmu wspomagającym ustalenie dalszej kolejności przeszukiwania jest heurystyka.
+Zostaną zaprezentowane dwie heurystyki - metryka Hamminga i Manhattan.
+Stany oczekujące na przetworzenie odkładane są do listy, która jest uporządkowana
+rosnąco według funkcji $ f(x) = g(x) + h(x) $, gdzie $ g(x) $ to długość ścieżki
+od stanu wyjściowego do stanu $ x $, a $ h(x) $ oznacza aproksymowana odległość
+do stanu docelowego według heurystyki $ h $.
 
 \section{Implementacja}
+\subsection{Stos technologiczny}
 
 Program został napisany w technologii C++ 17 z wykorzystaniem biblioteki
 Google Test wspierającej testy jednostkowe. Stan układanki przedstawiony
@@ -134,70 +133,91 @@ algorytmami i strukturami danych dostępnymi w bibliotece STL języka C++.
 \section{Materiały i metody}
 Do zrealizowania zadania zostały użyte następujące programy i skrypty wspomagające dostarczone razem z kartą
 przedmiotu:
- \begin{itemize}
-   \item
-   Generator układanek,
-   \item
-   Walidator układanek,
-   \item
-   Wizualizator układanek,
-   \item
-   Skrypt uruchamiające program przeszukujący w trybie wsadowym (powłoka bash),
-   \item
-   Skrypt ekstraktujący dane wygenerowane podczas przeszukiwania (powłoka bash).
+\begin{itemize}
+  \item
+    Generator układanek,
+  \item
+    Walidator układanek,
+  \item
+    Wizualizator układanek,
+  \item
+    Skrypt uruchamiające program przeszukujący w trybie wsadowym (powłoka bash),
+  \item
+    Skrypt ekstraktujący dane wygenerowane podczas przeszukiwania (powłoka bash).
 \end{itemize}
 Do stworzenia pliku binarnego solvera z kodu źródłowego C++ użyto kompilatora Clang z pakietu LLVM.
 Prezentacja graficzna wyników została wstępnie przetworzona za pomocą oprogramowania Jupyter Notebook (kernel
 Python 3).
 
+Algorytmy przeszukiwania przestrzeni stanów zostały porównane na podstawie parametrów takich jak:
+\begin{itemize}
+  \item długość ścieżki,
+  \item ilość odwiedzonych stanów,
+  \item ilość przetworzonych stanów,
+  \item maksymalny stopień rekursji,
+  \item czas przetwarzania algorytmu.
+\end{itemize}
+
 \section{Wyniki}
+
+Wyniki zostaną zaprezentowane w następującej kolejności:
+\begin{itemize}
+  \item Porównanie wszystkich algorytmów
+  \item Wpływ wybranego porządku przeszukiwania dla algorytmów ślepych
+    \begin{itemize}
+      \item BFS
+      \item DFS
+    \end{itemize}
+  \item Wpływ wybranej metryki dla algorytmu A*
+\end{itemize}
+
 % All algorithms
-\newgeometry{left=0.5cm,right=1cm,top=2cm, bottom=3cm}
+\newgeometry{left=0.5cm,right=1cm,top=1.5cm, bottom=3cm}
 \begin{figure}[H]
   \centering
   \makebox[\textwidth][c]{%
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_3_0.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_3_0.png}
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_3_1.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_3_1.png}
     \end{minipage}
-}%
+  }%
 \end{figure}
 \begin{figure}[H]
   \centering
   \makebox[\textwidth][c]{%
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_3_2.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_3_2.png}
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_3_3.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_3_3.png}
     \end{minipage}
-}%
+  }%
 \end{figure}
 \begin{figure}[H]
   \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_3_3.png}
-    \end{minipage}
+  \begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=1.1\textwidth]{output_3_4.png}
+  \end{minipage}
 \end{figure}
 
 %end all algorithms
 
 %bfs comp
 \afterpage{
-\thispagestyle{empty}
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.735]{output_5_0.png}
-  \includegraphics[scale=0.735]{output_5_1.png}
-  \includegraphics[scale=0.735]{output_5_2.png}
-\end{figure}
+  \thispagestyle{empty}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.735]{output_5_0.png}
+    \includegraphics[scale=0.735]{output_5_1.png}
+    \includegraphics[scale=0.735]{output_5_2.png}
+  \end{figure}
 }
 \begin{figure}[H]
   \includegraphics[scale=0.735]{output_5_3.png}
@@ -207,13 +227,13 @@ Python 3).
 
 %dfs comp
 \afterpage{
-\thispagestyle{empty}
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.735]{output_6_0.png}
-  \includegraphics[scale=0.735]{output_6_1.png}
-  \includegraphics[scale=0.735]{output_6_2.png}
-\end{figure}
+  \thispagestyle{empty}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.735]{output_6_0.png}
+    \includegraphics[scale=0.735]{output_6_1.png}
+    \includegraphics[scale=0.735]{output_6_2.png}
+  \end{figure}
 }
 \begin{figure}[H]
   \includegraphics[scale=0.735]{output_6_3.png}
@@ -226,37 +246,98 @@ Python 3).
   \centering
   \makebox[\textwidth][c]{%
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_4_0.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_4_0.png}
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_4_1.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_4_1.png}
     \end{minipage}
-}%
+  }%
 \end{figure}
 \begin{figure}[H]
   \centering
   \makebox[\textwidth][c]{%
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_4_2.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_4_2.png}
     \end{minipage}\hfill
     \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_4_3.png}
+      \centering
+      \includegraphics[width=1.1\textwidth]{output_4_3.png}
     \end{minipage}
-}%
+  }%
 \end{figure}
 \begin{figure}[H]
   \centering
-    \begin{minipage}{0.45\textwidth}
-        \centering
-        \includegraphics[width=1.1\textwidth]{output_4_4.png}
-    \end{minipage}
+  \begin{minipage}{0.45\textwidth}
+    \centering
+    \includegraphics[width=1.1\textwidth]{output_4_4.png}
+  \end{minipage}
 \end{figure}
 %end astr metrics comp
 
 \restoregeometry
+
+\section{Dyskusja}
+\subsection{Optymalność badanych algorytmów}
+
+Spośród testowanych algorytmów BFS i A* znajdowały zawsze rozwiązanie optymalne. W wypadku DFS w ogólności nie
+jest to prawdą. BFS sprawdza najpierw wszystkie stany znajdujące się w takiej samej odległości od stanu
+wyjściowego. Dzięki takiej taktyce odtworzenie ścieżki zawsze da optymalny wynik. Dla porównania, droga
+tworzona przez DFS jest zupełnie inna - algorytm dopóki nie napotka przeszkody (w wypadku układanki - np. brak
+możliwego ruchu w danym kierunku) będzie wchodził wgłąb grafu, przez co rozwiązania znajdujące się naprawdę
+blisko mogą zostać przeoczone.
+
+Algorytm A* jest zawsze optymalny przy założeniu, że użyliśmy prawidłowej heurystyki, tzn takiej która nie
+przeszacowuje faktycznego kosztu.
+
+\subsection{Ilość przetwarzanych danych}
+
+DFS po raz kolejny wyróżnia się pośród badanych algorytmów - przetwarza zdecydowanie najwięcej stanów.
+Najlepiej w tym zestawieniu wypada algorytm A*, w szczególności z metryką Manhattan - można to zauważyć
+zwłaszcza dla głębokości większej niż 5.
+
+\subsection{Szybkość działania}
+
+Dla głębokości rzędów 1 i 2 BFS wypada nieznacznie lepiej, jednakże tendencja ta zaczyna się odwracać już w
+momencie, gdy szukamy rozwiązań układanek o głębokościach większych lub równych 3. Co ciekawe, W zestawieniu
+średnich czasów dla metryk Manhattan zostaje daleko w tyle za metryką Hamminga i ten trend wydaje się być
+rosnący. Te dwa spostrzeżenia - BFS szybszy dla głębokości mniejszej niż 3 oraz A* z metryką Hamminga szybsza
+niż A* z metryką Manhattan - mają wspólne wyjaśnienie. Przy małej głębokości układanki duże znaczenie ma koszt
+umieszczenia stanu na liście frontier. W implementacji stworzonej na potrzeby zadania  dla BFS koszt
+ten jest równy kosztowi wstawienia elementu do kolekcji. W wypadku algorytmu A* koszt wstawienia jest
+dodatkowo powiększony o obliczenia związane z zastosowaną metryką, przy czym obliczenie odległości Hamminga
+jest znacznie tańsze niż obliczenie odległości taksówkowej. Aby dać możliwość głosu obrony metryki Manhattan w
+znajdowaniu najkrótszej drogi w grafie przeprowadzono dodatkowe badanie na układance o głębokości 20. W tej
+próbie odnotowano następujące czasy:
+
+\begin{itemize}
+  \item Manhattan: 59.688 ms.
+  \item Hamming: 581.177 ms.
+\end{itemize}
+
+Jest to niestety wyłącznie jedna próbka, zatem nie można na jej podstawie udowodnić tezy, że metryka Manhattan
+dla dużych głębokości pozwala znaleźć rozwiązanie szybciej niż metryka Hamminga, jednakże na pewno zachęca do
+przeprowadzenia dalszych badań na układankach o głębokościach większych niż 7.
+
+Na temat szybkości algorytmu DFS można powiedzieć niestety tyle, że w ogólności odstaje ona od czasów
+wykonania algorytmów BFS i A*. Dobre rezultaty można zaobserwować jedynie w wypadkach korzystnych szeregów
+przeszukiwania.
+
+\section{Wnioski}
+\begin{itemize}
+  \item BFS i A* to algorytmy zupełne i optymalne,
+  \item Nie należy stosować DFS do przeszukiwania grafu przestrzeni stanów,
+  \item Zastosowanie przeszukiwania heurystycznego znacznie redukuje liczbę odwiedzonych i przetworzonych
+    stanów.
+\end{itemize}
+
+\begin{thebibliography}{0}
+  \bibitem{l2short}
+  \textsl{http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html}
+  \bibitem{l2short}
+  \textsl{http://wms.mat.agh.edu.pl/~zankomar/wyklady/Wyklad8.htm}
+\end{thebibliography}
 
 \end{document}
