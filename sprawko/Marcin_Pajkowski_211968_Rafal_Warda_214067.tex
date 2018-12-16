@@ -35,7 +35,7 @@
 
 \section{Cel}
 
-Implementacja grafowych algorytmów przeszukiwania przestrzeni stanów,
+Implementacja grafowych algorytmów przeszukiwania przestrzeni stanów;
 porównanie metod ślepych i heurystycznych na przykładzie układanki
 ``piętnastka''.
 
@@ -43,23 +43,20 @@ porównanie metod ślepych i heurystycznych na przykładzie układanki
 
 \subsection{O grze ``piętnastka''}
 
-``Piętnastka'' jest grą z serii łamigłówek logicznych. Układanka posiada
-wymiar MxN (najczęściej są to układy o równych wymiarach - 4x4 lub 3x3).
-Jedno pole jest zawsze wolne. Gracz wykonuje ruchy przemieszczając
-klocki z wykorzystaniem wolnego pola. Elementy układanki mogą
-reprezentować liczby - wówczas zadaniem gracza jest ułożenie elementów w
-odpowiednim szeregu.
+``Piętnastka'' jest grą z serii łamigłówek logicznych. W klasycznym wydaniu
+jest zbudowana jako ramka, wewnątrz której znajdują się klocki. Jedno pole
+tej konstrukcji zawsze jest wolne, umożliwia to graczowi przesuwanie klocków.
+Celem rozgrywki jest ułożenie klocków w określonej kolejności - może to być
+ciąg liczb naturalnych lub obrazek.
 
 \subsection{Złożoność problemu i rozwiązywalność}
 
-Ilość stanów każdej układanki można wyznaczyć za pomocą wzoru:
-$ iloscStanow = iloscPol! $. Dla układanki 4x4 będzie to liczba
-$ 16! = 2.0922789888 * 10^{13} $. Jednakże nie wszystkie układy są
-rozwiązywalne. Możemy je podzielić na parzyste i nieparzyste - co
+Nie wszystkie układy są rozwiązywalne. Możemy je podzielić na parzyste i nieparzyste - co
 oznacza, że do uzyskania stanu wzorcowego należy wykonać parzystą lub
-nieparzystą liczbę ruchów. Układy powstające wskutek legalnego
-przesuwania klocków w obrębie wolnego pola, począwszy od układu
-docelowego, są układami parzystymi.
+nieparzystą liczbę ruchów. Wszystkie układy powstające wskutek legalnego
+przesuwania klocków - wykonując pierwszy ruch począwszy od układu docelowego - są układami parzystymi.
+ Ilość stanów każdej układanki można wyznaczyć za pomocą wzoru:
+$ iloscStanow = \frac{iloscPol!}2 $.
 
 \subsection{Grafowa reprezentacja przestrzeni stanów}
 
@@ -86,15 +83,15 @@ strony).
     \end{itemize}
 \end{itemize}
 
-Algorytmy klasyczne jako dodatkowy parametr przyjmują \textbf{porządek
+Algorytmy klasyczne jako dodatkowy parametr przyjmują \emph{porządek
 przeszukiwania}, zaś algorytm A* do przyspieszenia procesu
-przeszukiwania wykorzystuje \textbf{metryki} - zostaną zaprezentowane
+przeszukiwania wykorzystuje \emph{metryki} - zostaną zaprezentowane
 metryka Hamminga oraz Manhattan (innymi nazwami tej metryki spotykane
 w literaturze metryka taksówkowa lub metryka miejska).
 
 \subsubsection{Breadth-First Search}
 
-Algorytm BFS przeszukuje graf \textbf{wszerz} - na początku
+Algorytm BFS przeszukuje graf \emph{wszerz} - na początku
 odwiedzany jest stan początkowy, następnie jego sąsiedzi
 a w dalszej kolejności sąsiedzi sąsiadów rozwiniętych w poprzednich
 iteracjach - do momentu znalezienia stanu wzorcowego.
@@ -130,24 +127,26 @@ wymiarach zapisane są w atrybutach klasy. Do zrealizowania
 poszczególnych metod przeszukiwania przestrzeni stanów posłużono się
 algorytmami i strukturami danych dostępnymi w bibliotece STL języka C++.
 
+\subsection{Usprawnienie DFS}
+
+W przypadku ``czystego'' algorytmu DFS niemożliwe było znalezienie rozwiązań
+układanki z arbitralnie ustawionym maksymalnym stopniu rekursji na 20. W tym celu zastosowano
+pewną modyfikację algorytmu - jeżeli stan rozwijany lub odwiedzany znajduje się bliżej
+stanu wyjściowego to stan ten będzie brany pod uwagę.
+
 \section{Materiały i metody}
 Do zrealizowania zadania zostały użyte następujące programy i skrypty wspomagające dostarczone razem z kartą
 przedmiotu:
-\begin{itemize}
-  \item
-    Generator układanek,
-  \item
-    Walidator układanek,
-  \item
-    Wizualizator układanek,
-  \item
-    Skrypt uruchamiające program przeszukujący w trybie wsadowym (powłoka bash),
-  \item
-    Skrypt ekstraktujący dane wygenerowane podczas przeszukiwania (powłoka bash).
-\end{itemize}
-Do stworzenia pliku binarnego solvera z kodu źródłowego C++ użyto kompilatora Clang z pakietu LLVM.
-Prezentacja graficzna wyników została wstępnie przetworzona za pomocą oprogramowania Jupyter Notebook (kernel
-Python 3).
+\begin{enumerate}
+  \item Generator układanek,
+  \item Walidator układanek,
+  \item Wizualizator układanek,
+  \item Skrypt uruchamiające program przeszukujący w trybie wsadowym (powłoka bash),
+  \item Skrypt ekstraktujący dane wygenerowane podczas przeszukiwania (powłoka bash).
+\end{enumerate}
+Do stworzenia pliku binarnego programu generującego rozwiązania z kodu źródłowego C++ użyto kompilatora
+Clang z pakietu LLVM. Wykresy zostały przygotowane w narzędziu Jupyter Notebook (kernel Python 3).
+Użyto bibliotek pandas, numpy i matplotlib.
 
 Algorytmy przeszukiwania przestrzeni stanów zostały porównane na podstawie parametrów takich jak:
 \begin{itemize}
@@ -161,7 +160,7 @@ Algorytmy przeszukiwania przestrzeni stanów zostały porównane na podstawie pa
 \section{Wyniki}
 
 Wyniki zostaną zaprezentowane w następującej kolejności:
-\begin{itemize}
+\begin{enumerate}
   \item Porównanie wszystkich algorytmów
   \item Wpływ wybranego porządku przeszukiwania dla algorytmów ślepych
     \begin{itemize}
@@ -169,7 +168,7 @@ Wyniki zostaną zaprezentowane w następującej kolejności:
       \item DFS
     \end{itemize}
   \item Wpływ wybranej metryki dla algorytmu A*
-\end{itemize}
+\end{enumerate}
 
 % All algorithms
 \newgeometry{left=0.5cm,right=1cm,top=1.5cm, bottom=3cm}
@@ -335,9 +334,12 @@ przeszukiwania.
 
 \begin{thebibliography}{0}
   \bibitem{l2short}
-  \textsl{http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html}
+  \textsl{http://theory.stanford.edu/\textasciitilde{}amitp/GameProgramming/Heuristics.html}
   \bibitem{l2short}
-  \textsl{http://wms.mat.agh.edu.pl/~zankomar/wyklady/Wyklad8.htm}
+  \textsl{http://wms.mat.agh.edu.pl/\textasciitilde{}zankomar/wyklady/Wyklad8.htm}
+  \bibitem{l2short}
+  \textsl{https://pandas.pydata.org/pandas-docs/stable/comparison\textunderscore{}with\textunderscore{}sql.html}
 \end{thebibliography}
 
 \end{document}
+
