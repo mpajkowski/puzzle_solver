@@ -24,7 +24,7 @@
   \studentinfo{Rafał Warda}{214067}
 }
 
-\title{Przeszukiwanie przestrzeni stanów}
+\title{Przeszukiwanie przestrzeni stanów - gra ``Piętnastka''}
 
 \begin{document}
 
@@ -100,15 +100,15 @@ iteracjach - do momentu znalezienia stanu wzorcowego.
 Inaczej działa algorytm DFS: w literaturze można spotkać się ze
 stwierdzeniem, że przeszukuje on graf \emph{w głąb}. Można łatwo to
 uzasadnić - DFS po rozwinięciu stanu wyjściowego nie próbuje rozwijać stanów
-na tej samej wysokości jak ma to miejsce W DFS. Zamiast tego odwiedza
+na tej samej wysokości jak ma to miejsce W BFS. Zamiast tego odwiedza
 stany-dzieci i rozwija je do momentu napotkanej przeszkody. Taką przeszkodą może
 być koniec ścieżki w głąb (w wypadku układanki - brak możliwości przesunięcia
 klocka w danym kierunku) lub arbitralnie ustalony limit osiąganej głębokości.
 
 \subsubsection{A*}
-Algorytm \emph{A*} przyjmuje inną strategię działania niż metody
+Algorytm A* przyjmuje inną strategię działania niż metody
 omówione wyżej - nie opiera się na ściśle określonym porządku. Suplementem tego
-algorytmu wspomagającym ustalenie dalszej kolejności przeszukiwania jest heurystyka.
+algorytmu wspomagającym ustalenie dalszej kolejności przeszukiwania jest \emph{heurystyka}.
 Zostaną zaprezentowane dwie heurystyki - metryka Hamminga i Manhattan.
 Stany oczekujące na przetworzenie odkładane są do listy, która jest uporządkowana
 rosnąco według funkcji $ f(x) = g(x) + h(x) $, gdzie $ g(x) $ to długość ścieżki
@@ -283,17 +283,17 @@ Wyniki zostaną zaprezentowane w następującej kolejności:
 
 Spośród testowanych algorytmów BFS i A* znajdowały zawsze rozwiązanie optymalne. W wypadku DFS w ogólności nie
 jest to prawdą. BFS sprawdza najpierw wszystkie stany znajdujące się w takiej samej odległości od stanu
-wyjściowego. Dzięki takiej taktyce odtworzenie ścieżki zawsze da optymalny wynik. Dla porównania, droga
-tworzona przez DFS jest zupełnie inna - algorytm dopóki nie napotka przeszkody (w wypadku układanki - np. brak
-możliwego ruchu w danym kierunku) będzie wchodził wgłąb grafu, przez co rozwiązania znajdujące się naprawdę
-blisko mogą zostać przeoczone.
+wyjściowego, dopiero potem schodzi ``głębiej''. Dzięki takiej taktyce odtworzenie ścieżki zawsze da optymalny wynik.
+Dla porównania, droga tworzona przez DFS jest zupełnie inna - algorytm dopóki nie napotka przeszkody
+(w wypadku układanki - np. brak możliwego ruchu w danym kierunku) będzie wchodził wgłąb grafu, przez co
+rozwiązania - nawet te znajdujące się naprawdę blisko - mogą zostać przeoczone.
 
 Algorytm A* jest zawsze optymalny przy założeniu, że użyliśmy prawidłowej heurystyki, tzn takiej która nie
 przeszacowuje faktycznego kosztu.
 
 \subsection{Ilość przetwarzanych danych}
 
-DFS po raz kolejny wyróżnia się pośród badanych algorytmów - przetwarza zdecydowanie najwięcej stanów.
+DFS po raz kolejny niechlubnie wyróżnia się pośród badanych algorytmów - przetwarza zdecydowanie najwięcej stanów.
 Najlepiej w tym zestawieniu wypada algorytm A*, w szczególności z metryką Manhattan - można to zauważyć
 zwłaszcza dla głębokości większej niż 5.
 
