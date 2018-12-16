@@ -80,11 +80,11 @@ auto DfsStrategy::findSolution() -> Solution
 
         if (exploredOccurence != std::end(explored)) {
           auto newNodeCurrRecursionDepth = newNode->getCurrentRecursionDepth();
-          if (exploredOccurence->second < newNodeCurrRecursionDepth) {
+          if (exploredOccurence->second > newNodeCurrRecursionDepth) {
+            exploredOccurence->second = newNodeCurrRecursionDepth;
+          } else {
             // nothing to do here; just found an occurence thus need to step out
             continue;
-          } else {
-            exploredOccurence->second = newNodeCurrRecursionDepth;
           }
         }
 
@@ -95,11 +95,11 @@ auto DfsStrategy::findSolution() -> Solution
 
         if (frontierOccurence != std::end(frontier)) {
           auto newNodeCurrRecursionDepth = newNode->getCurrentRecursionDepth();
-          if ((*frontierOccurence)->getCurrentRecursionDepth() < newNodeCurrRecursionDepth) {
+          if ((*frontierOccurence)->getCurrentRecursionDepth() > newNodeCurrRecursionDepth) {
+            frontier.erase(frontierOccurence);
+          } else {
             // nothing to do here; just found an occurence thus need to step out
             continue;
-          } else {
-            frontier.erase(frontierOccurence);
           }
         }
 
